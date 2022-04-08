@@ -35,8 +35,17 @@ public final class HttpRequests extends JavaPlugin {
                 Player p = (Player) sender;
                 if (getConfig().getBoolean("AllowRequest")) {
                     if (p.hasPermission("HttpRequest")) {
-                        if (args.length == 0) {
-                            p.sendMessage(ChatColor.RED + "Syntax: /httpsend <request type> <destination> <name1=value1&name2=value2>");
+                        if (args.length < 2) {
+                            p.sendMessage(ChatColor.RED + "Syntax: /httpsend <GET/POST> <destination> <name1=value1&name2=value2>");
+                        }
+                        else if (args[1] != "POST" || command_args[1] != "GET") {
+                            p.sendMessage(ChatColor.RED + "Only POST and GET requests are supported at this time");
+                        }
+                        else if (args[1] == "POST" && !getConfig().getBoolean("AllowPost")) {
+                            p.sendMessage(ChatColor.RED + "Post requests are disabled on this server");
+                        }
+                        else if (args[1] == "GET" && !getConfig().getBoolean("AllowGet")) {
+                            p.sendMessage(ChatColor.RED + "Get requests are disabled on this server");
                         }
                         else {
                             command_args = args;
@@ -87,8 +96,8 @@ public final class HttpRequests extends JavaPlugin {
             }
             if (has_values) {
                 try {
-                    if (getConfig().getBoolean("printRequestsToConsole")) {
-                        System.out.println("An HTTP " + command_args[0] + " request is being sent to " + command_args[1]);
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        System.out.println("An HTTP " + command_args[0] + " request with values is being sent to " + command_args[1]);
                     }
                     String urlParameters = command_args[2];
                     URL url = new URL(request_type);
@@ -98,6 +107,29 @@ public final class HttpRequests extends JavaPlugin {
                     writer.write(urlParameters);
                     writer.flush();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        System.out.println("The request was sent successfully");
+                    }
+                } catch (Exception e) {
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        System.out.println("The request failed to send");
+                    }
+                }
+            }
+            else {
+                try {
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        System.out.println("An HTTP " + command_args[0] + " request with no values is being sent to " + command_args[1]);
+                    }
+                    URL url = new URL(request_type);
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+                    writer.flush();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        System.out.println("The request was sent successfully");
+                    }
                 } catch (Exception e) {
                     if (getConfig().getBoolean("printRequestsToConsole")) {
                         System.out.println("The request failed to send");
