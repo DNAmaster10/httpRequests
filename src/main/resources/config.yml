@@ -1,4 +1,4 @@
 PrintRequestsToConsole: true
 AllowRequest: true
 AllowPost: true
-ALlowGet: true
+AllowGet: true
