@@ -35,7 +35,7 @@ public final class HttpRequests extends JavaPlugin {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
                 if (getConfig().getBoolean("AllowRequest")) {
-                    if (p.hasPermission("HttpRequest")) {
+                    if (p.hasPermission("httprequest.sendhttp")) {
                         if (args.length < 2) {
                             p.sendMessage(ChatColor.RED + "Syntax: /httpsend <GET/POST> <destination> <name1=value1&name2=value2>");
                         }
@@ -50,7 +50,7 @@ public final class HttpRequests extends JavaPlugin {
                             new sendData(plugin, args);
                         }
                     } else {
-                        p.sendMessage(ChatColor.RED + "You need the HttpRequest permission to perform that command");
+                        p.sendMessage(ChatColor.RED + "You need the permission httprequest.sendhttp to perform that command");
                     }
                 }
                 else {
