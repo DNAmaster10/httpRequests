@@ -112,10 +112,43 @@ public final class HttpRequests extends JavaPlugin {
             runTaskAsynchronously(plugin);
         }
         public void run() {
+            boolean shouldSend = true;
+            if (getConfig().getBoolean("UseWhitelist")) {
+                String[] whitelist = getConfig().getString("Whitelist").split(",");
+                boolean inWhitelist = false;
+                for (int i = 0; i < whitelist.length; i++) {
+                    if (command_args[1].contains(whitelist[i])) {
+                        inWhitelist = true;
+                        break;
+                    }
+                }
+                if (!inWhitelist) {
+                    shouldSend = false;
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        System.out.println("A request was attempted, but the URL was not found in the whitelist. Aborting");
+                    }
+                }
+            }
+            if (getConfig().getBoolean("UseBlacklist")) {
+                String[] blacklist = getConfig().getString("Blacklist").split(",");
+                boolean inBlacklist = false;
+                for (int i = 0; i < blacklist.length; i++) {
+                    if (command_args[1].contains(blacklist[i])) {
+                        inBlacklist = true;
+                        break;
+                    }
+                }
+                if (inBlacklist) {
+                    shouldSend = false;
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        System.out.println("A request was attempted, but the URL was found in the blacklist. Aborting");
+                    }
+                }
+            }
             boolean hasValues;
             String httpMethod = command_args[0];
             hasValues = command_args.length > 2;
-            if (hasValues) {
+            if (hasValues && shouldSend) {
                 try {
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
                         System.out.println("An HTTP " + command_args[0] + " request with values is being sent to " + command_args[1]);
@@ -150,7 +183,7 @@ public final class HttpRequests extends JavaPlugin {
                         }
                     }
             }
-            else {
+            else if (shouldSend){
                 try {
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
                         System.out.println("An HTTP " + command_args[0] + " request with no values is being sent to " + command_args[1]);

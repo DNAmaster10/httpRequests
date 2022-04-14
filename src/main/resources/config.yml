@@ -1,4 +1,12 @@
-PrintRequestsToConsole: true
+PrintRequestsToConsole: false
 AllowRequest: true
 AllowPost: true
 AllowGet: true
+
+UseWhitelist: false
+#Whitelist format: http://example.com,http://example2.com
+Whitelist: www.example.com
+
+UseBlacklist: false
+#Blacklist format: http://example.com,http://example2.com
+Blacklist: www.example.com
