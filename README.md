@@ -5,3 +5,5 @@ Currently, I've only tested GET and POST. The plugin does not allow data to be r
 
 To send an HTTP request, the command format is as follows: /sendhttp (GET/POST) (address with port) (values, if any).
 As an example: /sendhttp POST https://example.com:8080/pages/form_submit.php username=james&password=1234
+
+For better documentation, refer to the plugin's spigot page: https://www.spigotmc.org/resources/http-requests.101253/
