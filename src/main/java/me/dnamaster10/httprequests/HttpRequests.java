@@ -116,22 +116,32 @@ public final class HttpRequests extends JavaPlugin {
             String httpMethod = command_args[0];
             hasValues = command_args.length > 2;
             if (hasValues) {
-                if (Objects.equals(httpMethod, "POST")) {
-                    try {
-                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                            System.out.println("An HTTP " + command_args[0] + " request with values is being sent to " + command_args[1]);
-                        }
-                        String urlParameters = command_args[2];
-                        URL url = new URL(command_args[1]);
-                        URLConnection conn = url.openConnection();
-                        conn.setDoOutput(true);
-                        OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+                try {
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        System.out.println("An HTTP " + command_args[0] + " request with values is being sent to " + command_args[1]);
+                    }
+                    URL url;
+                    String get_url;
+                    String urlParameters = "";
+                    if (Objects.equals(httpMethod, "GET")) {
+                        get_url = command_args[1] + "?" + command_args[2];
+                        url = new URL(get_url);
+                    }
+                    else {
+                        url = new URL(command_args[1]);
+                        urlParameters = command_args[2];
+                    }
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+                    if (!Objects.equals(httpMethod, "GET")) {
                         writer.write(urlParameters);
-                        writer.flush();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                    }
+                    writer.flush();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
                             System.out.println("The request was sent successfully");
-                        }
+                    }
                     } catch (Exception e) {
                         Thread t = Thread.currentThread();
                         t.getUncaughtExceptionHandler().uncaughtException(t, e);
@@ -139,31 +149,6 @@ public final class HttpRequests extends JavaPlugin {
                             System.out.println("The request failed to send");
                         }
                     }
-                }
-                else if (Objects.equals(httpMethod, "GET")) {
-                    try {
-                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                            System.out.println("An HTTP " + command_args[0] + " request with values is being sent to " + command_args[1]);
-                        }
-                        String get_url = command_args[1] + "?" + command_args[2];
-                        System.out.println(get_url);
-                        URL url = new URL(get_url);
-                        URLConnection conn = url.openConnection();
-                        conn.setDoOutput(true);
-                        OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-                        writer.flush();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                            System.out.println("The request was sent successfully");
-                        }
-                    } catch (Exception e) {
-                        Thread t = Thread.currentThread();
-                        t.getUncaughtExceptionHandler().uncaughtException(t, e);
-                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                            System.out.println("The request failed to send");
-                        }
-                    }
-                }
             }
             else {
                 try {
