@@ -1,7 +1,6 @@
 package me.dnamaster10.httprequests;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -14,6 +13,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public final class HttpRequests extends JavaPlugin {
@@ -21,7 +22,7 @@ public final class HttpRequests extends JavaPlugin {
     public void onEnable() {
         getConfig().options().copyDefaults();
         saveDefaultConfig();
-        System.out.println("HttpRequests has finished loading!");
+        getLogger().info("HttpRequests has finished loading!");
         plugin = this;
     }
     @Override
@@ -30,7 +31,6 @@ public final class HttpRequests extends JavaPlugin {
     }
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        //send
         if (command.getName().equalsIgnoreCase("httpsend")) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
@@ -46,8 +46,53 @@ public final class HttpRequests extends JavaPlugin {
                             p.sendMessage(ChatColor.RED + "Get requests are disabled on this server");
                         }
                         else {
-                            command_args = args;
-                            new sendData(plugin, args);
+                            if (getConfig().getBoolean("UseGlobalCooldown")) {
+                                if ((int) (System.currentTimeMillis()) - general_last_request_ms < getConfig().getInt("GlobalCooldownMs")) {
+                                    p.sendMessage(ChatColor.RED + "Too many requests are being sent at this time");
+                                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                                        getLogger().info("Too many requests are being attempted");
+                                    }
+                                }
+                                else {
+                                    command_args = args;
+                                    general_last_request_ms = (int) (System.currentTimeMillis());
+                                    new sendData(plugin, args);
+                                }
+                            }
+                            else if (getConfig().getBoolean("UseUrlSpecificCooldown")) {
+                                Boolean isContainedInArray = false;
+                                for (int i = 0; i < url_last_request_ms.size(); i++) {
+                                    String current_url_string = url_last_request_ms.get(i);
+                                    if (current_url_string.contains(args[1])) {
+                                        isContainedInArray = true;
+                                        String[] current_url = url_last_request_ms.get(i).split(",");
+                                        Long temp = Long.valueOf(current_url[1]);
+                                        Long current_time_int = System.currentTimeMillis();
+                                        if (current_time_int - temp < getConfig().getInt("UrlSpecificCooldown")) {
+                                            p.sendMessage(ChatColor.RED + "Too many requests are being send to this URL!");
+                                            if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                                                getLogger().warning("Too many requests are being sent to " + args[1]);
+                                            }
+                                            break;
+                                        }
+                                        else {
+                                            url_last_request_ms.set(i, args[1] + "," + (System.currentTimeMillis()));
+                                            command_args = args;
+                                            new sendData(plugin, args);
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (!isContainedInArray) {
+                                    url_last_request_ms.add(args[1] + "," + (System.currentTimeMillis()));
+                                    command_args = args;
+                                    new sendData(plugin, args);
+                                }
+                            }
+                            else {
+                                command_args = args;
+                                new sendData(plugin, args);
+                            }
                         }
                     } else {
                         p.sendMessage(ChatColor.RED + "You need the permission httprequest.sendhttp to perform that command");
@@ -59,53 +104,137 @@ public final class HttpRequests extends JavaPlugin {
             } else if (sender instanceof ConsoleCommandSender) {
                 if (getConfig().getBoolean("AllowRequest")) {
                     if (args.length < 2) {
-                        System.out.println("Syntax: httpsend <request type> <destination> <name1:value1,name2:value2>");
+                        getLogger().warning("Syntax: httpsend <request type> <destination> <name1:value1,name2:value2>");
                     }
                     else if (args[0].equals("POST") && !getConfig().getBoolean("AllowPost")) {
-                        System.out.println("A command block tried to run a POST request, but they are disabled on this server.");
+                        getLogger().warning("POST requests are disabled in the config");
                     }
                     else if (args[0].equals("GET") && !getConfig().getBoolean("AllowGet")) {
-                        System.out.println("Get requests are disabled on this server");
+                        getLogger().warning("GET requests are disabled in the config.");
                     }
                     else {
-                        command_args = args;
-                        new sendData(plugin, args);
+                        if (getConfig().getBoolean("UseGlobalCooldown")) {
+                            if ((int) (System.currentTimeMillis()) - general_last_request_ms < getConfig().getInt("GlobalCooldownMs")) {
+                                getLogger().warning("Too many requests are being attempted");
+
+                            }
+                            else {
+                                command_args = args;
+                                general_last_request_ms = (int) (System.currentTimeMillis());
+                                new sendData(plugin, args);
+                            }
+                        }
+                        else if (getConfig().getBoolean("UseUrlSpecificCooldown")) {
+                            Boolean isContainedInArray = false;
+                            for (int i = 0; i < url_last_request_ms.size(); i++) {
+                                String current_url_string = url_last_request_ms.get(i);
+                                if (current_url_string.contains(args[1])) {
+                                    isContainedInArray = true;
+                                    String[] current_url = url_last_request_ms.get(i).split(",");
+                                    Long temp = Long.valueOf(current_url[1]);
+                                    Long current_time_int = System.currentTimeMillis();
+                                    if (current_time_int - temp < getConfig().getInt("UrlSpecificCooldown")) {
+                                        getLogger().warning("Too many requests are being sent to " + args[1]);
+                                        break;
+                                    }
+                                    else {
+                                        url_last_request_ms.set(i, args[1] + "," + (System.currentTimeMillis()));
+                                        command_args = args;
+                                        new sendData(plugin, args);
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!isContainedInArray) {
+                                url_last_request_ms.add(args[1] + "," + (System.currentTimeMillis()));
+                                command_args = args;
+                                new sendData(plugin, args);
+                            }
+                        }
+                        else {
+                            command_args = args;
+                            new sendData(plugin, args);
+                        }
                     }
                 }
                 else {
-                    System.out.println("HTTP requests are disabled in the config");
+                    getLogger().warning("HTTP requests are disabled in the config");
                 }
             }
             else {
                 if (getConfig().getBoolean("AllowRequest")) {
                     if (args.length < 2) {
                         if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                            System.out.println("Syntax: httpsend <request type> <destination> <name1:value1,name2:value2>");
+                            getLogger().warning("Syntax: httpsend <request type> <destination> <name1:value1,name2:value2>");
                         }
                     }
                     else if (args[0].equals("POST") && !getConfig().getBoolean("AllowPost")) {
                         if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                            System.out.println("A command block tried to run a POST request, but they are disabled on this server.");
+                            getLogger().warning("A command block tried to run a POST request, but they are disabled on this server.");
                         }
                     }
                     else if (args[0].equals("GET") && !getConfig().getBoolean("AllowGet")) {
                         if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                            System.out.println("A command block tried to run a GET request, but they are disabled on this server.");
+                            getLogger().warning("A command block tried to run a GET request, but they are disabled on this server.");
                         }
                     }
                     else {
-                        command_args = args;
-                        new sendData(plugin, args);
+                        if (getConfig().getBoolean("UseGlobalCooldown")) {
+                            if ((int) (System.currentTimeMillis()) - general_last_request_ms < getConfig().getInt("GlobalCooldownMs")) {
+                                if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                                    getLogger().warning("Too many requests are being attempted");
+                                }
+                            }
+                            else {
+                                command_args = args;
+                                general_last_request_ms = (int) (System.currentTimeMillis());
+                                new sendData(plugin, args);
+                            }
+                        }
+                        else if (getConfig().getBoolean("UseUrlSpecificCooldown")) {
+                            Boolean isContainedInArray = false;
+                            for (int i = 0; i < url_last_request_ms.size(); i++) {
+                                String current_url_string = url_last_request_ms.get(i);
+                                if (current_url_string.contains(args[1])) {
+                                    isContainedInArray = true;
+                                    String[] current_url = url_last_request_ms.get(i).split(",");
+                                    Long temp = Long.valueOf(current_url[1]);
+                                    Long current_time_int = System.currentTimeMillis();
+                                    if (current_time_int - temp < getConfig().getInt("UrlSpecificCooldown")) {
+                                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                                            getLogger().warning("Too many requests are being sent to " + args[1]);
+                                        }
+                                        break;
+                                    }
+                                    else {
+                                        url_last_request_ms.set(i, args[1] + "," + (System.currentTimeMillis()));
+                                        command_args = args;
+                                        new sendData(plugin, args);
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!isContainedInArray) {
+                                url_last_request_ms.add(args[1] + "," + (System.currentTimeMillis()));
+                                command_args = args;
+                                new sendData(plugin, args);
+                            }
+                        }
+                        else {
+                            command_args = args;
+                            new sendData(plugin, args);
+                        }
                     }
                 }
                 else {
-                    System.out.println("HTTP requests are disabled in the config");
+                    if (getConfig().getBoolean("PrintRequestsToConole")) {
+                        getLogger().warning("A command block tried to send an HTTP request, but HTTP requests are disabled in the config");
+                    }
                 }
             }
         }
         return true;
     }
-    static String[] command_args;
     public class sendData extends BukkitRunnable {
 
         public sendData(JavaPlugin plugin, String[] args) {
@@ -125,7 +254,7 @@ public final class HttpRequests extends JavaPlugin {
                 if (!inWhitelist) {
                     shouldSend = false;
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                        System.out.println("A request was attempted, but the URL was not found in the whitelist. Aborting");
+                        getLogger().warning("A request was attempted, but the URL was not found in the whitelist. Aborting");
                     }
                 }
             }
@@ -141,7 +270,7 @@ public final class HttpRequests extends JavaPlugin {
                 if (inBlacklist) {
                     shouldSend = false;
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                        System.out.println("A request was attempted, but the URL was found in the blacklist. Aborting");
+                        getLogger().warning("A request was attempted, but the URL was found in the blacklist. Aborting");
                     }
                 }
             }
@@ -151,7 +280,7 @@ public final class HttpRequests extends JavaPlugin {
             if (hasValues && shouldSend) {
                 try {
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                        System.out.println("An HTTP " + command_args[0] + " request with values is being sent to " + command_args[1]);
+                        getLogger().info("An HTTP " + command_args[0] + " request with values is being sent to " + command_args[1]);
                     }
                     URL url;
                     String get_url;
@@ -173,20 +302,18 @@ public final class HttpRequests extends JavaPlugin {
                     writer.flush();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                            System.out.println("The request was sent successfully");
+                            getLogger().info("The request was sent successfully");
                     }
                     } catch (Exception e) {
-                        Thread t = Thread.currentThread();
-                        t.getUncaughtExceptionHandler().uncaughtException(t, e);
                         if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                            System.out.println("The request failed to send");
+                            getLogger().warning("The request failed to send");
                         }
                     }
             }
             else if (shouldSend){
                 try {
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                        System.out.println("An HTTP " + command_args[0] + " request with no values is being sent to " + command_args[1]);
+                        getLogger().info("An HTTP " + command_args[0] + " request with no values is being sent to " + command_args[1]);
                     }
                     URL url = new URL(command_args[1]);
                     URLConnection conn = url.openConnection();
@@ -195,14 +322,17 @@ public final class HttpRequests extends JavaPlugin {
                     writer.flush();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                        System.out.println("The request was sent successfully");
+                        getLogger().info("The request was sent successfully");
                     }
                 } catch (Exception e) {
                     if (getConfig().getBoolean("printRequestsToConsole")) {
-                        System.out.println("The request failed to send");
+                        getLogger().warning("The request failed to send");
                     }
                 }
             }
         }
     }
+    static String[] command_args;
+    static List<String> url_last_request_ms = new ArrayList<String>();
+    static int general_last_request_ms = 1;
 }

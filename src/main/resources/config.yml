@@ -1,12 +1,17 @@
+#Details for each config setting can be found on the plugins spigot page: https://www.spigotmc.org/resources/http-requests.101253/
 PrintRequestsToConsole: false
 AllowRequest: true
 AllowPost: true
 AllowGet: true
 
 UseWhitelist: false
-#Whitelist format: http://example.com,http://example2.com
 Whitelist: www.example.com
 
 UseBlacklist: false
-#Blacklist format: http://example.com,http://example2.com
 Blacklist: www.example.com
+
+UseGlobalCooldown: false
+GlobalCooldownMs: 500
+
+UseUrlSpecificCooldown: true
+UrlSpecificCooldown: 500
