@@ -61,7 +61,7 @@ public final class HttpRequests extends JavaPlugin {
                                 else {
                                     command_args = args;
                                     general_last_request_ms = (int) (System.currentTimeMillis());
-                                    new sendData(plugin);
+                                    new SendData(plugin);
                                 }
                             }
                             else if (getConfig().getBoolean("UseUrlSpecificCooldown")) {
@@ -82,7 +82,7 @@ public final class HttpRequests extends JavaPlugin {
                                         else {
                                             url_last_request_ms.set(i, args[1] + "," + (System.currentTimeMillis()));
                                             command_args = args;
-                                            new sendData(plugin);
+                                            new SendData(plugin);
                                         }
                                         break;
                                     }
@@ -90,12 +90,12 @@ public final class HttpRequests extends JavaPlugin {
                                 if (!isContainedInArray) {
                                     url_last_request_ms.add(args[1] + "," + (System.currentTimeMillis()));
                                     command_args = args;
-                                    new sendData(plugin);
+                                    new SendData(plugin);
                                 }
                             }
                             else {
                                 command_args = args;
-                                new sendData(plugin);
+                                new SendData(plugin);
                             }
                         }
                     } else {
@@ -125,7 +125,7 @@ public final class HttpRequests extends JavaPlugin {
                             else {
                                 command_args = args;
                                 general_last_request_ms = (int) (System.currentTimeMillis());
-                                new sendData(plugin);
+                                new SendData(plugin);
                             }
                         }
                         else if (getConfig().getBoolean("UseUrlSpecificCooldown")) {
@@ -143,7 +143,7 @@ public final class HttpRequests extends JavaPlugin {
                                     else {
                                         url_last_request_ms.set(i, args[1] + "," + (System.currentTimeMillis()));
                                         command_args = args;
-                                        new sendData(plugin);
+                                        new SendData(plugin);
                                     }
                                     break;
                                 }
@@ -151,12 +151,12 @@ public final class HttpRequests extends JavaPlugin {
                             if (!isContainedInArray) {
                                 url_last_request_ms.add(args[1] + "," + (System.currentTimeMillis()));
                                 command_args = args;
-                                new sendData(plugin);
+                                new SendData(plugin);
                             }
                         }
                         else {
                             command_args = args;
-                            new sendData(plugin);
+                            new SendData(plugin);
                         }
                     }
                 }
@@ -191,7 +191,7 @@ public final class HttpRequests extends JavaPlugin {
                             else {
                                 command_args = args;
                                 general_last_request_ms = (int) (System.currentTimeMillis());
-                                new sendData(plugin);
+                                new SendData(plugin);
                             }
                         }
                         else if (getConfig().getBoolean("UseUrlSpecificCooldown")) {
@@ -211,7 +211,7 @@ public final class HttpRequests extends JavaPlugin {
                                     else {
                                         url_last_request_ms.set(i, args[1] + "," + (System.currentTimeMillis()));
                                         command_args = args;
-                                        new sendData(plugin);
+                                        new SendData(plugin);
                                     }
                                     break;
                                 }
@@ -219,12 +219,12 @@ public final class HttpRequests extends JavaPlugin {
                             if (!isContainedInArray) {
                                 url_last_request_ms.add(args[1] + "," + (System.currentTimeMillis()));
                                 command_args = args;
-                                new sendData(plugin);
+                                new SendData(plugin);
                             }
                         }
                         else {
                             command_args = args;
-                            new sendData(plugin);
+                            new SendData(plugin);
                         }
                     }
                 }
@@ -237,9 +237,9 @@ public final class HttpRequests extends JavaPlugin {
         }
         return true;
     }
-    public class sendData extends BukkitRunnable {
+    public class SendData extends BukkitRunnable {
 
-        public sendData(JavaPlugin plugin) {
+        public SendData(JavaPlugin plugin) {
             runTaskAsynchronously(plugin);
         }
         public void run() {
