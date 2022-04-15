@@ -18,6 +18,9 @@ import java.util.Objects;
 
 public final class HttpRequests extends JavaPlugin {
     private static HttpRequests plugin;
+    private static String[] command_args;
+    private static final List<String> url_last_request_ms = new ArrayList<>();
+    private static int general_last_request_ms = 1;
 
     @Override
     public void onEnable() {
@@ -329,7 +332,4 @@ public final class HttpRequests extends JavaPlugin {
             }
         }
     }
-    static String[] command_args;
-    static final List<String> url_last_request_ms = new ArrayList<>();
-    static int general_last_request_ms = 1;
 }
