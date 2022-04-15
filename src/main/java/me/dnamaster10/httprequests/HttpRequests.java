@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("unused")
 public final class HttpRequests extends JavaPlugin {
     private static HttpRequests plugin;
 
