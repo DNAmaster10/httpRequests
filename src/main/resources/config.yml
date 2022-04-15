@@ -1,4 +1,4 @@
-#Details for each config setting can be found on the plugins spigot page: https://www.spigotmc.org/resources/http-requests.101253/
+#Details for each config setting can be found on the plugin's spigot page: https://www.spigotmc.org/resources/http-requests.101253/
 PrintRequestsToConsole: false
 AllowRequest: true
 AllowPost: true

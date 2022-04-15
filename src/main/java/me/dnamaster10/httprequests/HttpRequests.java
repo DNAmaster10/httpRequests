@@ -7,9 +7,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
@@ -19,21 +18,24 @@ import java.util.Objects;
 
 public final class HttpRequests extends JavaPlugin {
     private static HttpRequests plugin;
+
+    @Override
     public void onEnable() {
         getConfig().options().copyDefaults();
         saveDefaultConfig();
         getLogger().info("HttpRequests has finished loading!");
         plugin = this;
     }
+
     @Override
     public void onDisable() {
         System.out.println("HttpRequests shutdown successfully");
     }
+
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (command.getName().equalsIgnoreCase("httpsend")) {
-            if (sender instanceof Player) {
-                Player p = (Player) sender;
+            if (sender instanceof Player p) {
                 if (getConfig().getBoolean("AllowRequest")) {
                     if (p.hasPermission("httprequest.sendhttp")) {
                         if (args.length < 2) {
@@ -56,11 +58,11 @@ public final class HttpRequests extends JavaPlugin {
                                 else {
                                     command_args = args;
                                     general_last_request_ms = (int) (System.currentTimeMillis());
-                                    new sendData(plugin, args);
+                                    new sendData(plugin);
                                 }
                             }
                             else if (getConfig().getBoolean("UseUrlSpecificCooldown")) {
-                                Boolean isContainedInArray = false;
+                                boolean isContainedInArray = false;
                                 for (int i = 0; i < url_last_request_ms.size(); i++) {
                                     String current_url_string = url_last_request_ms.get(i);
                                     if (current_url_string.contains(args[1])) {
@@ -73,25 +75,24 @@ public final class HttpRequests extends JavaPlugin {
                                             if (getConfig().getBoolean("PrintRequestsToConsole")) {
                                                 getLogger().warning("Too many requests are being sent to " + args[1]);
                                             }
-                                            break;
                                         }
                                         else {
                                             url_last_request_ms.set(i, args[1] + "," + (System.currentTimeMillis()));
                                             command_args = args;
-                                            new sendData(plugin, args);
-                                            break;
+                                            new sendData(plugin);
                                         }
+                                        break;
                                     }
                                 }
                                 if (!isContainedInArray) {
                                     url_last_request_ms.add(args[1] + "," + (System.currentTimeMillis()));
                                     command_args = args;
-                                    new sendData(plugin, args);
+                                    new sendData(plugin);
                                 }
                             }
                             else {
                                 command_args = args;
-                                new sendData(plugin, args);
+                                new sendData(plugin);
                             }
                         }
                     } else {
@@ -121,11 +122,11 @@ public final class HttpRequests extends JavaPlugin {
                             else {
                                 command_args = args;
                                 general_last_request_ms = (int) (System.currentTimeMillis());
-                                new sendData(plugin, args);
+                                new sendData(plugin);
                             }
                         }
                         else if (getConfig().getBoolean("UseUrlSpecificCooldown")) {
-                            Boolean isContainedInArray = false;
+                            boolean isContainedInArray = false;
                             for (int i = 0; i < url_last_request_ms.size(); i++) {
                                 String current_url_string = url_last_request_ms.get(i);
                                 if (current_url_string.contains(args[1])) {
@@ -135,25 +136,24 @@ public final class HttpRequests extends JavaPlugin {
                                     Long current_time_int = System.currentTimeMillis();
                                     if (current_time_int - temp < getConfig().getInt("UrlSpecificCooldown")) {
                                         getLogger().warning("Too many requests are being sent to " + args[1]);
-                                        break;
                                     }
                                     else {
                                         url_last_request_ms.set(i, args[1] + "," + (System.currentTimeMillis()));
                                         command_args = args;
-                                        new sendData(plugin, args);
-                                        break;
+                                        new sendData(plugin);
                                     }
+                                    break;
                                 }
                             }
                             if (!isContainedInArray) {
                                 url_last_request_ms.add(args[1] + "," + (System.currentTimeMillis()));
                                 command_args = args;
-                                new sendData(plugin, args);
+                                new sendData(plugin);
                             }
                         }
                         else {
                             command_args = args;
-                            new sendData(plugin, args);
+                            new sendData(plugin);
                         }
                     }
                 }
@@ -188,11 +188,11 @@ public final class HttpRequests extends JavaPlugin {
                             else {
                                 command_args = args;
                                 general_last_request_ms = (int) (System.currentTimeMillis());
-                                new sendData(plugin, args);
+                                new sendData(plugin);
                             }
                         }
                         else if (getConfig().getBoolean("UseUrlSpecificCooldown")) {
-                            Boolean isContainedInArray = false;
+                            boolean isContainedInArray = false;
                             for (int i = 0; i < url_last_request_ms.size(); i++) {
                                 String current_url_string = url_last_request_ms.get(i);
                                 if (current_url_string.contains(args[1])) {
@@ -204,30 +204,29 @@ public final class HttpRequests extends JavaPlugin {
                                         if (getConfig().getBoolean("PrintRequestsToConsole")) {
                                             getLogger().warning("Too many requests are being sent to " + args[1]);
                                         }
-                                        break;
                                     }
                                     else {
                                         url_last_request_ms.set(i, args[1] + "," + (System.currentTimeMillis()));
                                         command_args = args;
-                                        new sendData(plugin, args);
-                                        break;
+                                        new sendData(plugin);
                                     }
+                                    break;
                                 }
                             }
                             if (!isContainedInArray) {
                                 url_last_request_ms.add(args[1] + "," + (System.currentTimeMillis()));
                                 command_args = args;
-                                new sendData(plugin, args);
+                                new sendData(plugin);
                             }
                         }
                         else {
                             command_args = args;
-                            new sendData(plugin, args);
+                            new sendData(plugin);
                         }
                     }
                 }
                 else {
-                    if (getConfig().getBoolean("PrintRequestsToConole")) {
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
                         getLogger().warning("A command block tried to send an HTTP request, but HTTP requests are disabled in the config");
                     }
                 }
@@ -237,16 +236,16 @@ public final class HttpRequests extends JavaPlugin {
     }
     public class sendData extends BukkitRunnable {
 
-        public sendData(JavaPlugin plugin, String[] args) {
+        public sendData(JavaPlugin plugin) {
             runTaskAsynchronously(plugin);
         }
         public void run() {
             boolean shouldSend = true;
             if (getConfig().getBoolean("UseWhitelist")) {
-                String[] whitelist = getConfig().getString("Whitelist").split(",");
+                String[] whitelist = Objects.requireNonNull(getConfig().getString("Whitelist"), "Expression 'getString(\"Whitelist\")' must not be null").split(",");
                 boolean inWhitelist = false;
-                for (int i = 0; i < whitelist.length; i++) {
-                    if (command_args[1].contains(whitelist[i])) {
+                for (String s : whitelist) {
+                    if (command_args[1].contains(s)) {
                         inWhitelist = true;
                         break;
                     }
@@ -259,10 +258,10 @@ public final class HttpRequests extends JavaPlugin {
                 }
             }
             if (getConfig().getBoolean("UseBlacklist")) {
-                String[] blacklist = getConfig().getString("Blacklist").split(",");
+                String[] blacklist = Objects.requireNonNull(getConfig().getString("Blacklist"), "Expression 'getString(\"Blacklist\")' must not be null").split(",");
                 boolean inBlacklist = false;
-                for (int i = 0; i < blacklist.length; i++) {
-                    if (command_args[1].contains(blacklist[i])) {
+                for (String s : blacklist) {
+                    if (command_args[1].contains(s)) {
                         inBlacklist = true;
                         break;
                     }
@@ -300,7 +299,6 @@ public final class HttpRequests extends JavaPlugin {
                         writer.write(urlParameters);
                     }
                     writer.flush();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
                             getLogger().info("The request was sent successfully");
                     }
@@ -320,7 +318,6 @@ public final class HttpRequests extends JavaPlugin {
                     conn.setDoOutput(true);
                     OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
                     writer.flush();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
                         getLogger().info("The request was sent successfully");
                     }
@@ -333,6 +330,6 @@ public final class HttpRequests extends JavaPlugin {
         }
     }
     static String[] command_args;
-    static List<String> url_last_request_ms = new ArrayList<String>();
+    static final List<String> url_last_request_ms = new ArrayList<>();
     static int general_last_request_ms = 1;
 }
