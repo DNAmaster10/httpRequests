@@ -4,6 +4,10 @@ AllowRequest: true
 AllowPost: true
 AllowGet: true
 
+AllowChatSender: true
+AllowCommandBlockSender: true
+AllowConsoleSender: true
+
 UseWhitelist: false
 Whitelist: www.example.com
 
