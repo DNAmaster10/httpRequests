@@ -1,7 +1,7 @@
 name: HttpRequests
 version: '${project.version}'
 main: me.dnamaster10.httprequests.HttpRequests
-api-version: 1.18
+api-version: 1.19
 authors: [ DNAmaster10 ]
 description: A plugin that allows the server to send http GET and POST requests to a remote web server through a command block.
 commands:
