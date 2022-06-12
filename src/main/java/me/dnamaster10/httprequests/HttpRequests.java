@@ -61,7 +61,7 @@ public final class HttpRequests extends JavaPlugin {
                                             getLogger().info("Too many requests are being attempted");
                                         }
                                     } else {
-                                        if (args[3].length() > 0 && !args[3].equals("application/json")) {
+                                        if (args.length >= 3 && !args[3].equals("application/json")) {
                                             p.sendMessage(ChatColor.RED + "Encoding type not recognised");
                                         }
                                         else {
@@ -85,7 +85,7 @@ public final class HttpRequests extends JavaPlugin {
                                                     getLogger().warning("Too many requests are being sent to " + args[1]);
                                                 }
                                             } else {
-                                                if (args[3].length() > 0 && !args[3].equals("application/json")) {
+                                                if (args.length >= 3 && !args[3].equals("application/json")) {
                                                     p.sendMessage(ChatColor.RED + "Encoding type not recognised");
                                                 }
                                                 else {
@@ -98,7 +98,7 @@ public final class HttpRequests extends JavaPlugin {
                                         }
                                     }
                                     if (!isContainedInArray) {
-                                        if (args[3].length() > 0 && !args[3].equals("application/json")) {
+                                        if (args.length >= 3 && !args[3].equals("application/json")) {
                                             p.sendMessage(ChatColor.RED + "Encoding type not recognised");
                                         }
                                         else {
@@ -108,7 +108,7 @@ public final class HttpRequests extends JavaPlugin {
                                         }
                                     }
                                 } else {
-                                    if (args[3].length() > 0 && !args[3].equals("application/json")) {
+                                    if (args.length >= 3 && !args[3].equals("application/json")) {
                                         p.sendMessage(ChatColor.RED + "Encoding type not recognised");
                                     }
                                     else {
@@ -140,7 +140,7 @@ public final class HttpRequests extends JavaPlugin {
                                 if ((int) (System.currentTimeMillis()) - general_last_request_ms < getConfig().getInt("GlobalCooldownMs")) {
                                     getLogger().warning("Too many requests are being attempted");
                                 } else {
-                                    if (args[3].length() > 0 && !args[3].equals("application/json"))
+                                    if (args.length >= 3 && !args[3].equals("application/json"))
                                     command_args = args;
                                     general_last_request_ms = (int) (System.currentTimeMillis());
                                     new SendData(plugin);
@@ -157,7 +157,7 @@ public final class HttpRequests extends JavaPlugin {
                                         if (current_time_int - temp < getConfig().getInt("UrlSpecificCooldown")) {
                                             getLogger().warning("Too many requests are being sent to " + args[1]);
                                         } else {
-                                            if (args[3].length() > 0 && !args[3].equals("application/json")) {
+                                            if (args.length >= 3 && !args[3].equals("application/json")) {
                                                 getLogger().warning("Encoding type not recognised");
                                             }
                                             else {
@@ -170,7 +170,7 @@ public final class HttpRequests extends JavaPlugin {
                                     }
                                 }
                                 if (!isContainedInArray) {
-                                    if (args[3].length() > 0 && !args[3].equals("application/json")) {
+                                    if (args.length >= 3 && !args[3].equals("application/json")) {
                                         getLogger().warning("Encoding type not recognised");
                                     }
                                     else {
@@ -180,7 +180,7 @@ public final class HttpRequests extends JavaPlugin {
                                     }
                                 }
                             } else {
-                                if (args[3].length() > 0 && !args[3].equals("application/json")) {
+                                if (args.length >= 3 && !args[3].equals("application/json")) {
                                     getLogger().warning("Encoding type not recognised");
                                 }
                                 command_args = args;
@@ -218,7 +218,7 @@ public final class HttpRequests extends JavaPlugin {
                                         getLogger().warning("Too many requests are being attempted");
                                     }
                                 } else {
-                                    if (args[3].length() > 0 && !args[3].equals("application/json")) {
+                                    if (args.length >= 3 && !args[3].equals("application/json")) {
                                         if (getConfig().getBoolean("PrintRequestsToConsole")) {
                                             getLogger().warning("A command block tried to send a request, but the encoding type was not recognised");
                                         }
@@ -243,7 +243,7 @@ public final class HttpRequests extends JavaPlugin {
                                                 getLogger().warning("Too many requests are being sent to " + args[1]);
                                             }
                                         } else {
-                                            if (args[3].length() > 0 && !args[3].equals("application/json")) {
+                                            if (args.length >= 3 && !args[3].equals("application/json")) {
                                                 if (getConfig().getBoolean("PrintRequestsToConsole")) {
                                                     getLogger().warning("A command block tried to send a request, but the encoding type was not recognised");
                                                 }
@@ -258,7 +258,7 @@ public final class HttpRequests extends JavaPlugin {
                                     }
                                 }
                                 if (!isContainedInArray) {
-                                    if (args[3].length() > 0 && !args[3].equals("application/json")) {
+                                    if (args.length >= 3 && !args[3].equals("application/json")) {
                                         if (getConfig().getBoolean("PrintRequestsToConsole")) {
                                             getLogger().warning("A command block tried to send a request, but the encoding type was not recognised");
                                         }
@@ -270,7 +270,7 @@ public final class HttpRequests extends JavaPlugin {
                                     }
                                 }
                             } else {
-                                if (args[3].length() > 0 && !args[3].equals("application/json")) {
+                                if (args.length >= 3 && !args[3].equals("application/json")) {
                                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
                                         getLogger().warning("A command block tried to send a request, but the encoding type was not recognised");
                                     }
