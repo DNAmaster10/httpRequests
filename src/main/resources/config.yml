@@ -21,3 +21,5 @@ GlobalCooldownMs: 500
 
 UseUrlSpecificCooldown: true
 UrlSpecificCooldown: 500
+
+AllowReload: true

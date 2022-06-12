@@ -42,7 +42,16 @@ public final class HttpRequests extends JavaPlugin {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (command.getName().equalsIgnoreCase("httpsend")) {
+        if (command.getName().equalsIgnoreCase("httpreload")) {
+            if (getConfig().getBoolean("AllowReload")) {
+                reloadConfig();
+                if (sender instanceof Player p) {
+                    p.sendMessage(ChatColor.GREEN + "Reloaded");
+                }
+                getLogger().info("Reloaded HTTPRequests config");
+            }
+        }
+        else if (command.getName().equalsIgnoreCase("httpsend")) {
             if (sender instanceof Player p) {
                 if (getConfig().getBoolean("AllowRequest")) {
                     if (getConfig().getBoolean("AllowChatSender")) {
@@ -130,20 +139,34 @@ public final class HttpRequests extends JavaPlugin {
                 if (getConfig().getBoolean("AllowRequest")) {
                     if (getConfig().getBoolean("AllowConsoleSender")) {
                         if (args.length < 2) {
-                            getLogger().warning("Syntax: httpsend <request type> <destination> <name1:value1,name2:value2>");
+                            if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                                getLogger().warning("Syntax: httpsend <request type> <destination> <name1:value1,name2:value2>");
+                            }
                         } else if (args[0].equals("POST") && !getConfig().getBoolean("AllowPost")) {
-                            getLogger().warning("POST requests are disabled in the config");
+                            if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                                getLogger().warning("POST requests are disabled in the config");
+                            }
                         } else if (args[0].equals("GET") && !getConfig().getBoolean("AllowGet")) {
-                            getLogger().warning("GET requests are disabled in the config.");
+                            if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                                getLogger().warning("GET requests are disabled in the config.");
+                            }
                         } else {
                             if (getConfig().getBoolean("UseGlobalCooldown")) {
                                 if ((int) (System.currentTimeMillis()) - general_last_request_ms < getConfig().getInt("GlobalCooldownMs")) {
-                                    getLogger().warning("Too many requests are being attempted");
+                                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                                        getLogger().warning("Too many requests are being attempted");
+                                    }
                                 } else {
-                                    if (args.length > 3 && !args[3].equals("application/json"))
-                                    command_args = args;
-                                    general_last_request_ms = (int) (System.currentTimeMillis());
-                                    new SendData(plugin);
+                                    if (args.length > 3 && !args[3].equals("application/json")) {
+                                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                                            getLogger().warning("Encoding type not recognised");
+                                        }
+                                    }
+                                    else {
+                                        general_last_request_ms = (int) (System.currentTimeMillis());
+                                        command_args = args;
+                                        new SendData(plugin);
+                                    }
                                 }
                             } else if (getConfig().getBoolean("UseUrlSpecificCooldown")) {
                                 boolean isContainedInArray = false;
@@ -155,10 +178,14 @@ public final class HttpRequests extends JavaPlugin {
                                         Long temp = Long.valueOf(current_url[1]);
                                         Long current_time_int = System.currentTimeMillis();
                                         if (current_time_int - temp < getConfig().getInt("UrlSpecificCooldown")) {
-                                            getLogger().warning("Too many requests are being sent to " + args[1]);
+                                            if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                                                getLogger().warning("Too many requests are being sent to " + args[1]);
+                                            }
                                         } else {
                                             if (args.length > 3 && !args[3].equals("application/json")) {
-                                                getLogger().warning("Encoding type not recognised");
+                                                if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                                                    getLogger().warning("Encoding type not recognised");
+                                                }
                                             }
                                             else {
                                                 url_last_request_ms.set(i, args[1] + "," + (System.currentTimeMillis()));
@@ -171,7 +198,9 @@ public final class HttpRequests extends JavaPlugin {
                                 }
                                 if (!isContainedInArray) {
                                     if (args.length > 3 && !args[3].equals("application/json")) {
-                                        getLogger().warning("Encoding type not recognised");
+                                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                                            getLogger().warning("Encoding type not recognised");
+                                        }
                                     }
                                     else {
                                         url_last_request_ms.add(args[1] + "," + (System.currentTimeMillis()));
@@ -181,7 +210,9 @@ public final class HttpRequests extends JavaPlugin {
                                 }
                             } else {
                                 if (args.length > 3 && !args[3].equals("application/json")) {
-                                    getLogger().warning("Encoding type not recognised");
+                                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                                        getLogger().warning("Encoding type not recognised");
+                                    }
                                 }
                                 command_args = args;
                                 new SendData(plugin);
@@ -189,11 +220,15 @@ public final class HttpRequests extends JavaPlugin {
                         }
                     }
                     else {
-                        getLogger().warning("Sending HTTP requests from the console is disabled in the config");
+                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                            getLogger().warning("Sending HTTP requests from the console is disabled in the config");
+                        }
                     }
                 }
                 else {
-                    getLogger().warning("HTTP requests are disabled in the config");
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        getLogger().warning("HTTP requests are disabled in the config");
+                    }
                 }
             }
             else {
@@ -343,10 +378,11 @@ public final class HttpRequests extends JavaPlugin {
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
                         getLogger().info("A POST request with values is being sent");
                     }
+                    String postVals = command_args[2].replace("-#-", " ");
                     var request = HttpRequest.newBuilder()
                             .uri(URI.create(command_args[1]))
                             .header("Content-Type","application/x-www-form-urlencoded")
-                            .POST(HttpRequest.BodyPublishers.ofString(command_args[2]))
+                            .POST(HttpRequest.BodyPublishers.ofString(postVals))
                             .timeout(Duration.of(getConfig().getInt("RequestTimeoutDuration"), ChronoUnit.MILLIS))
                             .build();
                     var client = HttpClient.newHttpClient();
@@ -370,7 +406,8 @@ public final class HttpRequests extends JavaPlugin {
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
                         getLogger().info("A GET request with values is being sent");
                     }
-                    String GETurl = command_args[1] + "?" + command_args[2];
+                    String getVals = command_args[2].replace("-#-", " ");
+                    String GETurl = command_args[1] + "?" + getVals;
                     var request = HttpRequest.newBuilder()
                             .uri(URI.create(GETurl))
                             .timeout(Duration.of(getConfig().getInt("RequestTimeoutDuration"), ChronoUnit.MILLIS))
@@ -420,10 +457,11 @@ public final class HttpRequests extends JavaPlugin {
                 if (getConfig().getBoolean("PrintRequestsToConsole")) {
                     getLogger().info("A JSON encoded request is being sent");
                 }
+                String postVals = command_args[2].replace("-#-", " ");
                 var request = HttpRequest.newBuilder()
                         .uri(URI.create(command_args[1]))
                         .header("Content-Type", "application/json")
-                        .POST(HttpRequest.BodyPublishers.ofString(command_args[2]))
+                        .POST(HttpRequest.BodyPublishers.ofString(postVals))
                         .timeout(Duration.of(getConfig().getInt("RequestTimeoutDuration"), ChronoUnit.MILLIS))
                         .build();
                 var client = HttpClient.newHttpClient();
