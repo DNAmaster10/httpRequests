@@ -398,7 +398,7 @@ public final class HttpRequests extends JavaPlugin {
                         }
                     } catch (IOException | InterruptedException e) {
                         if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                            getLogger().warning("An error occured sending the request");
+                            getLogger().warning("An error occurred sending the request");
                         }
                     }
                 }
@@ -424,7 +424,7 @@ public final class HttpRequests extends JavaPlugin {
                         }
                     } catch (IOException | InterruptedException e) {
                         if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                            getLogger().warning("An error occured sending the request");
+                            getLogger().warning("An error occurred sending the request");
                         }
                     }
                 }
@@ -449,7 +449,7 @@ public final class HttpRequests extends JavaPlugin {
                     }
                 } catch (IOException | InterruptedException e) {
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                        getLogger().warning("An error occured sending the request");
+                        getLogger().warning("An error occurred sending the request");
                     }
                 }
             }
@@ -476,7 +476,7 @@ public final class HttpRequests extends JavaPlugin {
                     }
                 } catch (IOException | InterruptedException e) {
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                        getLogger().warning("An error occured sending the request");
+                        getLogger().warning("An error occurred sending the request");
                     }
                 }
             }
