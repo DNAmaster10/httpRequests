@@ -4,6 +4,8 @@ AllowRequest: true
 AllowPost: true
 AllowGet: true
 
+RequestTimeoutDuration: 10000
+
 AllowChatSender: true
 AllowCommandBlockSender: true
 AllowConsoleSender: true

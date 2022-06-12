@@ -9,6 +9,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.http.HttpConnectTimeoutException;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -344,6 +347,7 @@ public final class HttpRequests extends JavaPlugin {
                             .uri(URI.create(command_args[1]))
                             .header("Content-Type","application/x-www-form-urlencoded")
                             .POST(HttpRequest.BodyPublishers.ofString(command_args[2]))
+                            .timeout(Duration.of(getConfig().getInt("RequestTimeoutDuration"), ChronoUnit.MILLIS))
                             .build();
                     var client = HttpClient.newHttpClient();
                     try {
@@ -352,8 +356,14 @@ public final class HttpRequests extends JavaPlugin {
                             getLogger().info("HTTP status code returned: " + response.statusCode());
                         }
 
+                    } catch (HttpConnectTimeoutException e) {
+                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                            getLogger().warning("The request timed out.");
+                        }
                     } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
+                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                            getLogger().warning("An error occured sending the request");
+                        }
                     }
                 }
                 else {
@@ -363,6 +373,7 @@ public final class HttpRequests extends JavaPlugin {
                     String GETurl = command_args[1] + "?" + command_args[2];
                     var request = HttpRequest.newBuilder()
                             .uri(URI.create(GETurl))
+                            .timeout(Duration.of(getConfig().getInt("RequestTimeoutDuration"), ChronoUnit.MILLIS))
                             .build();
                     var client = HttpClient.newHttpClient();
                     try {
@@ -370,8 +381,14 @@ public final class HttpRequests extends JavaPlugin {
                         if (getConfig().getBoolean("PrintRequestsToConsole")) {
                             getLogger().info("The GET request sent successfully with HTTP response: " + response.statusCode());
                         }
+                    } catch (HttpConnectTimeoutException e) {
+                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                            getLogger().warning("The request timed out.");
+                        }
                     } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
+                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                            getLogger().warning("An error occured sending the request");
+                        }
                     }
                 }
             }
@@ -381,6 +398,7 @@ public final class HttpRequests extends JavaPlugin {
                 }
                 var request = HttpRequest.newBuilder()
                         .uri(URI.create(command_args[1]))
+                        .timeout(Duration.of(getConfig().getInt("RequestTimeoutDuration"), ChronoUnit.MILLIS))
                         .build();
                 var client = HttpClient.newHttpClient();
                 try {
@@ -388,8 +406,14 @@ public final class HttpRequests extends JavaPlugin {
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
                         getLogger().info("The GET request sent successfully with HTTP response: " + response.statusCode());
                     }
+                } catch (HttpConnectTimeoutException e) {
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        getLogger().warning("The request timed out.");
+                    }
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        getLogger().warning("An error occured sending the request");
+                    }
                 }
             }
             else if (shouldSend) {
@@ -400,19 +424,26 @@ public final class HttpRequests extends JavaPlugin {
                         .uri(URI.create(command_args[1]))
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(command_args[2]))
+                        .timeout(Duration.of(getConfig().getInt("RequestTimeoutDuration"), ChronoUnit.MILLIS))
                         .build();
                 var client = HttpClient.newHttpClient();
                 try {
                     var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                    if (getConfig().getBoolean("printRequestsToConsole")) {
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
                         getLogger().warning("JSON request returned code: " + response.statusCode());
                     }
+                } catch (HttpConnectTimeoutException e) {
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        getLogger().warning("The request timed out.");
+                    }
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        getLogger().warning("An error occured sending the request");
+                    }
                 }
             }
             else {
-                if (getConfig().getBoolean("printRequestsToConsole")) {
+                if (getConfig().getBoolean("PrintRequestsToConsole")) {
                     getLogger().warning("An unknown error was found with a request");
                 }
             }
