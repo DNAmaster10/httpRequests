@@ -9,9 +9,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -61,7 +58,7 @@ public final class HttpRequests extends JavaPlugin {
                                             getLogger().info("Too many requests are being attempted");
                                         }
                                     } else {
-                                        if (args.length >= 3 && !args[3].equals("application/json")) {
+                                        if (args.length > 3 && !args[3].equals("application/json")) {
                                             p.sendMessage(ChatColor.RED + "Encoding type not recognised");
                                         }
                                         else {
@@ -85,7 +82,7 @@ public final class HttpRequests extends JavaPlugin {
                                                     getLogger().warning("Too many requests are being sent to " + args[1]);
                                                 }
                                             } else {
-                                                if (args.length >= 3 && !args[3].equals("application/json")) {
+                                                if (args.length > 3 && !args[3].equals("application/json")) {
                                                     p.sendMessage(ChatColor.RED + "Encoding type not recognised");
                                                 }
                                                 else {
@@ -98,7 +95,7 @@ public final class HttpRequests extends JavaPlugin {
                                         }
                                     }
                                     if (!isContainedInArray) {
-                                        if (args.length >= 3 && !args[3].equals("application/json")) {
+                                        if (args.length > 3 && !args[3].equals("application/json")) {
                                             p.sendMessage(ChatColor.RED + "Encoding type not recognised");
                                         }
                                         else {
@@ -108,7 +105,7 @@ public final class HttpRequests extends JavaPlugin {
                                         }
                                     }
                                 } else {
-                                    if (args.length >= 3 && !args[3].equals("application/json")) {
+                                    if (args.length > 3 && !args[3].equals("application/json")) {
                                         p.sendMessage(ChatColor.RED + "Encoding type not recognised");
                                     }
                                     else {
@@ -140,7 +137,7 @@ public final class HttpRequests extends JavaPlugin {
                                 if ((int) (System.currentTimeMillis()) - general_last_request_ms < getConfig().getInt("GlobalCooldownMs")) {
                                     getLogger().warning("Too many requests are being attempted");
                                 } else {
-                                    if (args.length >= 3 && !args[3].equals("application/json"))
+                                    if (args.length > 3 && !args[3].equals("application/json"))
                                     command_args = args;
                                     general_last_request_ms = (int) (System.currentTimeMillis());
                                     new SendData(plugin);
@@ -157,7 +154,7 @@ public final class HttpRequests extends JavaPlugin {
                                         if (current_time_int - temp < getConfig().getInt("UrlSpecificCooldown")) {
                                             getLogger().warning("Too many requests are being sent to " + args[1]);
                                         } else {
-                                            if (args.length >= 3 && !args[3].equals("application/json")) {
+                                            if (args.length > 3 && !args[3].equals("application/json")) {
                                                 getLogger().warning("Encoding type not recognised");
                                             }
                                             else {
@@ -170,7 +167,7 @@ public final class HttpRequests extends JavaPlugin {
                                     }
                                 }
                                 if (!isContainedInArray) {
-                                    if (args.length >= 3 && !args[3].equals("application/json")) {
+                                    if (args.length > 3 && !args[3].equals("application/json")) {
                                         getLogger().warning("Encoding type not recognised");
                                     }
                                     else {
@@ -180,7 +177,7 @@ public final class HttpRequests extends JavaPlugin {
                                     }
                                 }
                             } else {
-                                if (args.length >= 3 && !args[3].equals("application/json")) {
+                                if (args.length > 3 && !args[3].equals("application/json")) {
                                     getLogger().warning("Encoding type not recognised");
                                 }
                                 command_args = args;
@@ -218,7 +215,7 @@ public final class HttpRequests extends JavaPlugin {
                                         getLogger().warning("Too many requests are being attempted");
                                     }
                                 } else {
-                                    if (args.length >= 3 && !args[3].equals("application/json")) {
+                                    if (args.length > 3 && !args[3].equals("application/json")) {
                                         if (getConfig().getBoolean("PrintRequestsToConsole")) {
                                             getLogger().warning("A command block tried to send a request, but the encoding type was not recognised");
                                         }
@@ -243,7 +240,7 @@ public final class HttpRequests extends JavaPlugin {
                                                 getLogger().warning("Too many requests are being sent to " + args[1]);
                                             }
                                         } else {
-                                            if (args.length >= 3 && !args[3].equals("application/json")) {
+                                            if (args.length > 3 && !args[3].equals("application/json")) {
                                                 if (getConfig().getBoolean("PrintRequestsToConsole")) {
                                                     getLogger().warning("A command block tried to send a request, but the encoding type was not recognised");
                                                 }
@@ -258,7 +255,7 @@ public final class HttpRequests extends JavaPlugin {
                                     }
                                 }
                                 if (!isContainedInArray) {
-                                    if (args.length >= 3 && !args[3].equals("application/json")) {
+                                    if (args.length > 3 && !args[3].equals("application/json")) {
                                         if (getConfig().getBoolean("PrintRequestsToConsole")) {
                                             getLogger().warning("A command block tried to send a request, but the encoding type was not recognised");
                                         }
@@ -270,7 +267,7 @@ public final class HttpRequests extends JavaPlugin {
                                     }
                                 }
                             } else {
-                                if (args.length >= 3 && !args[3].equals("application/json")) {
+                                if (args.length > 3 && !args[3].equals("application/json")) {
                                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
                                         getLogger().warning("A command block tried to send a request, but the encoding type was not recognised");
                                     }
@@ -337,60 +334,68 @@ public final class HttpRequests extends JavaPlugin {
                 }
             }
             boolean hasValues;
-            String httpMethod = command_args[0];
             hasValues = command_args.length > 2;
-            if (hasValues && shouldSend && !(command_args[3].length() > 0)) {
-                try {
+            if (hasValues && shouldSend && !(command_args.length > 3)) {
+                if (Objects.equals(command_args[0], "POST")) {
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                        getLogger().info("An HTTP " + command_args[0] + " request with values is being sent to " + command_args[1]);
+                        getLogger().info("A POST request with values is being sent");
                     }
-                    URL url;
-                    String get_url;
-                    String urlParameters = "";
-                    if (Objects.equals(httpMethod, "GET")) {
-                        get_url = command_args[1] + "?" + command_args[2];
-                        url = new URL(get_url);
-                    }
-                    else {
-                        url = new URL(command_args[1]);
-                        urlParameters = command_args[2];
-                    }
-                    URLConnection conn = url.openConnection();
-                    conn.setDoOutput(true);
-                    OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-                    if (!Objects.equals(httpMethod, "GET")) {
-                        writer.write(urlParameters);
-                    }
-                    writer.flush();
-                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                            getLogger().info("The request was sent successfully");
-                    }
-                    } catch (Exception e) {
+                    var request = HttpRequest.newBuilder()
+                            .uri(URI.create(command_args[1]))
+                            .header("Content-Type","application/x-www-form-urlencoded")
+                            .POST(HttpRequest.BodyPublishers.ofString(command_args[2]))
+                            .build();
+                    var client = HttpClient.newHttpClient();
+                    try {
+                        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
                         if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                            getLogger().warning("The request failed to send");
+                            getLogger().info("HTTP status code returned: " + response.statusCode());
                         }
+
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
                     }
-            }
-            else if (shouldSend && !hasValues){
-                try {
+                }
+                else {
                     if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                        getLogger().info("An HTTP " + command_args[0] + " request with no values is being sent to " + command_args[1]);
+                        getLogger().info("A GET request with values is being sent");
                     }
-                    URL url = new URL(command_args[1]);
-                    URLConnection conn = url.openConnection();
-                    conn.setDoOutput(true);
-                    OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-                    writer.flush();
-                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
-                        getLogger().info("The request was sent successfully");
-                    }
-                } catch (Exception e) {
-                    if (getConfig().getBoolean("printRequestsToConsole")) {
-                        getLogger().warning("The request failed to send");
+                    String GETurl = command_args[1] + "?" + command_args[2];
+                    var request = HttpRequest.newBuilder()
+                            .uri(URI.create(GETurl))
+                            .build();
+                    var client = HttpClient.newHttpClient();
+                    try {
+                        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                        if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                            getLogger().info("The GET request sent successfully with HTTP response: " + response.statusCode());
+                        }
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             }
+            else if (shouldSend && !hasValues){
+                if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                    getLogger().info("A GET request with no values is being sent");
+                }
+                var request = HttpRequest.newBuilder()
+                        .uri(URI.create(command_args[1]))
+                        .build();
+                var client = HttpClient.newHttpClient();
+                try {
+                    var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                    if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                        getLogger().info("The GET request sent successfully with HTTP response: " + response.statusCode());
+                    }
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             else if (shouldSend) {
+                if (getConfig().getBoolean("PrintRequestsToConsole")) {
+                    getLogger().info("A JSON encoded request is being sent");
+                }
                 var request = HttpRequest.newBuilder()
                         .uri(URI.create(command_args[1]))
                         .header("Content-Type", "application/json")
