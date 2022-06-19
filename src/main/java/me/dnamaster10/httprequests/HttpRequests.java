@@ -15,6 +15,7 @@ public final class HttpRequests extends JavaPlugin {
     public static String[] command_args;
     public static final List<String> url_last_request_ms = new ArrayList<>();
     public static int general_last_request_ms = 1;
+    public static String result;
 
     @Override
     public void onEnable() {

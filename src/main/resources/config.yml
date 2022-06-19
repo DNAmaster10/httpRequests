@@ -23,3 +23,18 @@ UseUrlSpecificCooldown: true
 UrlSpecificCooldown: 500
 
 AllowReload: true
+
+#Advanced
+
+#--------------RESPONSE HANDLING--------------#
+#The bellow config options can be dangerous to use if not configured properly
+AllowResponseProcessing: false
+
+UseResponseWhitelist: false
+ResponseProcessingWhitelist: www.example.com
+
+UseResponseBlacklist: false
+ResponseProcessingBlacklist: www.example.com
+
+RequestProcessing:
+  Functions:
