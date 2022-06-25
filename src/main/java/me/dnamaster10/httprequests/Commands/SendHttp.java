@@ -24,6 +24,13 @@ public class SendHttp extends JavaPlugin {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             String responseText = "nullval-#-";
             boolean shouldSend = true;
+            if (!plugin.getConfig().isSet("SpaceCharacter")) {
+                if (sender instanceof Player p) {
+                    p.sendMessage("The request failed to send as no Space Character is set in the plugin's config");
+                }
+                plugin.getLogger().warning("No Space Character is set in the plugin's config");
+                shouldSend = false;
+            }
             if (plugin.getConfig().getBoolean("UseWhitelist")) {
                 String[] whitelist = Objects.requireNonNull(plugin.getConfig().getString("Whitelist"), "Expression 'getString(\"Whitelist\")' must not be null").split(",");
                 boolean inWhitelist = false;
@@ -69,7 +76,7 @@ public class SendHttp extends JavaPlugin {
                     if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
                         plugin.getLogger().info("A POST request with values is being sent");
                     }
-                    String postVals = command_args[2].replace("-#-", " ");
+                    String postVals = command_args[2].replace(plugin.getConfig().getString("SpaceCharacter"), " ");
                     var request = HttpRequest.newBuilder()
                             .uri(URI.create(command_args[1]))
                             .header("Content-Type","application/x-www-form-urlencoded")
@@ -109,7 +116,7 @@ public class SendHttp extends JavaPlugin {
                     if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
                         plugin.getLogger().info("A GET request with values is being sent");
                     }
-                    String getVals = command_args[2].replace("-#-", " ");
+                    String getVals = command_args[2].replace(plugin.getConfig().getString("SpaceCharacter"), " ");
                     String GETurl = command_args[1] + "?" + getVals;
                     var request = HttpRequest.newBuilder()
                             .uri(URI.create(GETurl))
@@ -184,7 +191,7 @@ public class SendHttp extends JavaPlugin {
                 if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
                     plugin.getLogger().info("A JSON encoded request is being sent");
                 }
-                String postVals = command_args[2].replace("-#-", " ");
+                String postVals = command_args[2].replace(plugin.getConfig().getString("SpaceCharacter"), " ");
                 var request = HttpRequest.newBuilder()
                         .uri(URI.create(command_args[1]))
                         .header("Content-Type", "application/json")

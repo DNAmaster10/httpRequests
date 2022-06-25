@@ -22,6 +22,8 @@ GlobalCooldownMs: 500
 UseUrlSpecificCooldown: true
 UrlSpecificCooldown: 500
 
+SpaceCharacter: -#-
+
 AllowReload: true
 
 #Advanced
@@ -35,6 +37,8 @@ ResponseProcessingWhitelist: www.example.com
 
 UseResponseBlacklist: false
 ResponseProcessingBlacklist: www.example.com
+
+FunctionSplitter: -#-
 
 RequestProcessing:
   Functions:
