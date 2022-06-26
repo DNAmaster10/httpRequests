@@ -2,7 +2,6 @@ package me.dnamaster10.httprequests.Commands;
 
 import me.dnamaster10.httprequests.HttpRequests;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -12,7 +11,7 @@ import static me.dnamaster10.httprequests.HttpRequests.general_last_request_ms;
 import static me.dnamaster10.httprequests.HttpRequests.url_last_request_ms;
 
 public class SendHttpChecks extends JavaPlugin {
-    public static <sender, command, label, args> Boolean sendHTTPCommand(HttpRequests plugin, CommandSender sender, Command command, String label, String[] args) {
+    public static void sendHTTPCommand(HttpRequests plugin, CommandSender sender, String[] args) {
         if (sender instanceof Player p) {
             if (plugin.getConfig().getBoolean("AllowRequest")) {
                 if (plugin.getConfig().getBoolean("AllowChatSender")) {
@@ -274,6 +273,5 @@ public class SendHttpChecks extends JavaPlugin {
                 }
             }
         }
-        return true;
     }
 }

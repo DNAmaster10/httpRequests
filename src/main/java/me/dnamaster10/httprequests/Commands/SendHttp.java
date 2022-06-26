@@ -23,6 +23,7 @@ public class SendHttp extends JavaPlugin {
     public static void SendData (HttpRequests plugin, CommandSender sender) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             String responseText = "nullval-#-";
+            Integer responseCode = null;
             boolean shouldSend = true;
             if (!plugin.getConfig().isSet("SpaceCharacter")) {
                 if (sender instanceof Player p) {
@@ -94,6 +95,7 @@ public class SendHttp extends JavaPlugin {
                         }
                         if (plugin.getConfig().getBoolean("AllowResponseProcessing")) {
                             responseText = response.body();
+                            responseCode = response.statusCode();
                         }
 
                     } catch (HttpConnectTimeoutException e) {
@@ -133,6 +135,7 @@ public class SendHttp extends JavaPlugin {
                         }
                         if (plugin.getConfig().getBoolean("AllowResponseProcessing")) {
                             responseText = response.body();
+                            responseCode = response.statusCode();
                         }
                     } catch (HttpConnectTimeoutException e) {
                         if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
@@ -170,6 +173,7 @@ public class SendHttp extends JavaPlugin {
                     }
                     if (plugin.getConfig().getBoolean("AllowResponseProcessing")) {
                         responseText = response.body();
+                        responseCode = response.statusCode();
                     }
                 } catch (HttpConnectTimeoutException e) {
                     if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
@@ -209,6 +213,7 @@ public class SendHttp extends JavaPlugin {
                     }
                     if (plugin.getConfig().getBoolean("AllowResponseProcessing")) {
                         responseText = response.body();
+                        responseCode = response.statusCode();
                     }
                 } catch (HttpConnectTimeoutException e) {
                     if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
@@ -238,7 +243,7 @@ public class SendHttp extends JavaPlugin {
             if (plugin.getConfig().getBoolean("AllowResponseProcessing") && !(Objects.equals(responseText, "nullval-#-"))) {
                 assert responseText != null;
                 if (responseText.length() > 0) {
-                    ResponseHandle.HandleResponse(plugin, responseText, command_args);
+                    ResponseHandle.HandleResponse(plugin, responseText, responseCode, command_args, sender);
                 }
             }
         });

@@ -37,8 +37,3 @@ ResponseProcessingWhitelist: www.example.com
 
 UseResponseBlacklist: false
 ResponseProcessingBlacklist: www.example.com
-
-FunctionSplitter: -#-
-
-RequestProcessing:
-  Functions:

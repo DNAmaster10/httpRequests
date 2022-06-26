@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 
 public class ReloadConfig extends JavaPlugin {
-    public static <sender> Boolean Reload(HttpRequests plugin, sender sender) {
+    public static <sender> void Reload(HttpRequests plugin, sender sender) {
         if (sender instanceof Player p) {
             if (p.hasPermission("httprequest.reload")) {
                 if (plugin.getConfig().getBoolean("AllowReload")) {
@@ -15,12 +15,12 @@ public class ReloadConfig extends JavaPlugin {
                 }
                 else {
                     p.sendMessage("Reloading the plugin is disabled in the config");
-                    return false;
+                    return;
                 }
             }
             else {
                 p.sendMessage(ChatColor.RED + "You do not have the permissions to perform that action");
-                return false;
+                return;
             }
         }
         if (plugin.getConfig().getBoolean("AllowReload")) {
@@ -28,13 +28,12 @@ public class ReloadConfig extends JavaPlugin {
         }
         else {
             plugin.getLogger().warning("Reloading the config is disabled in the config");
-            return false;
+            return;
         }
         plugin.reloadConfig();
         plugin.getLogger().info("Successfully reloaded config");
         if (sender instanceof Player p) {
             p.sendMessage(ChatColor.GREEN + "Successfully reloaded config");
         }
-        return true;
     }
 }
