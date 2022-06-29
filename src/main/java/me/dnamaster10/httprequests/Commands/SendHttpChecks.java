@@ -22,7 +22,11 @@ public class SendHttpChecks extends JavaPlugin {
                             p.sendMessage(ChatColor.RED + "Post requests are disabled on this server");
                         } else if (args[0].equals("GET") && !plugin.getConfig().getBoolean("AllowGet")) {
                             p.sendMessage(ChatColor.RED + "Get requests are disabled on this server");
-                        } else {
+                        }
+                        else if (!args[0].equals("GET") && !args[0].equals("POST")) {
+                            p.sendMessage(ChatColor.RED + "Request type '"+args[0]+"' is not currently supported.");
+                        }
+                        else {
                             if (plugin.getConfig().getBoolean("UseGlobalCooldown")) {
                                 if ((int) (System.currentTimeMillis()) - general_last_request_ms < plugin.getConfig().getInt("GlobalCooldownMs")) {
                                     p.sendMessage(ChatColor.RED + "Too many requests are being sent at this time");
@@ -106,7 +110,11 @@ public class SendHttpChecks extends JavaPlugin {
                         if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
                             plugin.getLogger().warning("GET requests are disabled in the config.");
                         }
-                    } else {
+                    }
+                    else if (!args[0].equals("GET") && !args[0].equals("POST")) {
+                        plugin.getLogger().warning("Request type '"+args[0]+"' is not currently supported.");
+                    }
+                    else {
                         if (plugin.getConfig().getBoolean("UseGlobalCooldown")) {
                             if ((int) (System.currentTimeMillis()) - general_last_request_ms < plugin.getConfig().getInt("GlobalCooldownMs")) {
                                 if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
@@ -196,7 +204,13 @@ public class SendHttpChecks extends JavaPlugin {
                         if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
                             plugin.getLogger().warning("A command block tried to run a GET request, but they are disabled on this server.");
                         }
-                    } else {
+                    }
+                    else if (!args[0].equals("GET") && !args[0].equals("POST")) {
+                        if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
+                            plugin.getLogger().warning("A command block tried to send a request, but the request type '"+args[0]+"' is not supported");
+                        }
+                    }
+                    else {
                         if (plugin.getConfig().getBoolean("UseGlobalCooldown")) {
                             if ((int) (System.currentTimeMillis()) - general_last_request_ms < plugin.getConfig().getInt("GlobalCooldownMs")) {
                                 if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
