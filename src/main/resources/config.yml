@@ -1,5 +1,7 @@
 #Details for each config setting can be found on the plugin's spigot page: https://www.spigotmc.org/resources/http-requests.101253/
 PrintRequestsToConsole: false
+SendResponseCodeToPlayer: false
+SendResponseBodyToPlayer: true
 AllowRequest: true
 AllowPost: true
 AllowGet: true

@@ -91,7 +91,12 @@ public class SendHttp extends JavaPlugin {
                             plugin.getLogger().info("HTTP status code returned: " + response.statusCode());
                         }
                         if (sender instanceof Player p) {
-                            p.sendMessage(ChatColor.GREEN + "Request sent successfully and returned code: " + response.statusCode());
+                            if(plugin.getConfig().getBoolean("SendResponseCodeToPlayer")) {
+                                p.sendMessage(ChatColor.GREEN + "Request sent successfully and returned code: " + response.statusCode());
+                            }
+                            if(plugin.getConfig().getBoolean("SendResponseBodyToPlayer")) {
+                                p.sendMessage(response.body());
+                            }
                         }
                         if (plugin.getConfig().getBoolean("AllowResponseProcessing")) {
                             responseText = response.body();
@@ -131,7 +136,12 @@ public class SendHttp extends JavaPlugin {
                             plugin.getLogger().info("The GET request sent successfully with HTTP response: " + response.statusCode());
                         }
                         if (sender instanceof Player p) {
-                            p.sendMessage(ChatColor.GREEN + "Request sent successfully and returned code: " + response.statusCode());
+                            if(plugin.getConfig().getBoolean("SendResponseCodeToPlayer")) {
+                                p.sendMessage(ChatColor.GREEN + "Request sent successfully and returned code: " + response.statusCode());
+                            }
+                            if(plugin.getConfig().getBoolean("SendResponseBodyToPlayer")) {
+                                p.sendMessage(response.body());
+                            }
                         }
                         if (plugin.getConfig().getBoolean("AllowResponseProcessing")) {
                             responseText = response.body();
@@ -169,7 +179,12 @@ public class SendHttp extends JavaPlugin {
                         plugin.getLogger().info("The GET request sent successfully with HTTP response: " + response.statusCode());
                     }
                     if (sender instanceof Player p) {
-                        p.sendMessage(ChatColor.GREEN + "Request sent successfully and returned code: " + response.statusCode());
+                        if(plugin.getConfig().getBoolean("SendResponseCodeToPlayer")) {
+                            p.sendMessage(ChatColor.GREEN + "Request sent successfully and returned code: " + response.statusCode());
+                        }
+                        if(plugin.getConfig().getBoolean("SendResponseBodyToPlayer")) {
+                            p.sendMessage(response.body());
+                        }
                     }
                     if (plugin.getConfig().getBoolean("AllowResponseProcessing")) {
                         responseText = response.body();
@@ -209,7 +224,12 @@ public class SendHttp extends JavaPlugin {
                         plugin.getLogger().warning("JSON request returned code: " + response.statusCode());
                     }
                     if (sender instanceof Player p) {
-                        p.sendMessage(ChatColor.GREEN + "Request sent successfully and returned code: " + response.statusCode());
+                        if(plugin.getConfig().getBoolean("SendResponseCodeToPlayer")) {
+                            p.sendMessage(ChatColor.GREEN + "Request sent successfully and returned code: " + response.statusCode());
+                        }
+                        if(plugin.getConfig().getBoolean("SendResponseBodyToPlayer")) {
+                            p.sendMessage(response.body());
+                        }
                     }
                     if (plugin.getConfig().getBoolean("AllowResponseProcessing")) {
                         responseText = response.body();
