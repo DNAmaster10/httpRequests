@@ -6,14 +6,12 @@
 
     <groupId>me.dnamaster10</groupId>
     <artifactId>HttpRequests</artifactId>
-    <version>1.5.1</version>
+    <version>2.0</version>
     <packaging>jar</packaging>
 
     <name>HttpRequests</name>
 
-    <description>A plugin that allows the server to send http GET and POST requests to a remote web server through a
-        command block.
-    </description>
+    <description>A plugin that allows the server to send http GET and POST requests to a remote web server through an ingame command.</description>
     <properties>
         <java.version>16</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

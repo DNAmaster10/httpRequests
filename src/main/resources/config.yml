@@ -1,8 +1,8 @@
 #Details for each config setting can be found on the plugin's spigot page: https://www.spigotmc.org/resources/http-requests.101253/
 
 PrintRequestsToConsole: false
-SendResponseCodeToPlayer: false
-SendResponseBodyToPlayer: true
+SendResponseCodeToPlayer: true
+SendResponseBodyToPlayer: false
 
 AllowRequest: true
 AllowPost: true
@@ -12,13 +12,12 @@ RequestTimeoutDuration: 10000
 
 AllowChatSender: true
 AllowCommandBlockSender: true
+AllowCommandBlockMinecartSender: true
 AllowConsoleSender: true
+AllowOtherSenders: false
 
 UseWhitelist: false
-Whitelist: www.example.com
-
 UseBlacklist: false
-Blacklist: www.example.com
 
 UseGlobalCooldown: false
 GlobalCooldownMs: 500
@@ -26,18 +25,22 @@ GlobalCooldownMs: 500
 UseUrlSpecificCooldown: true
 UrlSpecificCooldown: 500
 
+MaxQueueSize: -1
+
 SpaceCharacter: -#-
 
 AllowReload: true
-
-#Advanced
+AllowWhitelistReload: true
+AllowBlacklistReload: true
 
 #--------------RESPONSE HANDLING--------------#
 #The bellow config options can be dangerous to use if not configured properly
 AllowResponseProcessing: false
 
-UseResponseWhitelist: false
-ResponseProcessingWhitelist: www.example.com
-
+UseResponseWhitelist: true
 UseResponseBlacklist: false
-ResponseProcessingBlacklist: www.example.com
+
+AllowResponseWhitelistReload: true
+AllowResponseBlacklistReload: true
+
+AllowScriptReload: true

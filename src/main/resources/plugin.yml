@@ -5,9 +5,24 @@ api-version: 1.13
 authors: [ DNAmaster10 ]
 description: A plugin that allows the server to send http GET and POST requests to a remote web server through a command block.
 commands:
-  httpsend:
+  httpSend:
     description: Used to send http requests to an external web server
-    usage: /httpsend
-  httpreload:
+    usage: /httpSend
+  httpReload:
     description: Reloads plugin configuration
-    usage: /httpreload
+    usage: /httpReload
+  httpReloadWhitelist:
+    description: Reloads the whitelist
+    usage: /httpReloadWhitelist
+  httpReloadBlacklist:
+    description: Reloads the blacklist
+    usage: /httpReloadBlacklist
+  httpReloadResponseWhitelist:
+    description: Reloads the response processing whitelist
+    usage: /httpReloadResponseWhitelist
+  httpReloadResponseBlacklist:
+    description: Reloads the response processing blacklist
+    usage: /httpReloadResponseBlacklist
+  httpReloadScript:
+    description: Reloads the response processing javascript file
+    usage: /httpReloadScript
