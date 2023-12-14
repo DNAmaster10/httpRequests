@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 
 public class Request {
     private static final HttpRequests plugin = HttpRequests.plugin;
+    //Get or Post
     public RequestType type;
     public String destination;
     //Note: Currently only json encoding supported, so only boolean is needed
@@ -27,6 +28,10 @@ public class Request {
         if (args.length > 2) {
             this.hasValues = true;
             this.values = args[2].replace(plugin.getConfig().getString("SpaceCharacter"), " ");
+            //Check for target selectors and add if they exist
+            if (this.values.contains("@")) {
+                this.values = Selectors.replaceSelectors(this.values);
+            }
         }
         if (args.length > 3) {
             this.hasEncoding = true;

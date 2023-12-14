@@ -55,6 +55,7 @@ public class SendHttp extends JavaPlugin {
                 }
                 uri = URI.create(uriString);
                 //Try to get the address authority
+                //Will throw error if invalid running catch statement
                 URL url = new URL(request.destination);
             }
             catch (Exception e) {
@@ -71,7 +72,7 @@ public class SendHttp extends JavaPlugin {
             }
             //Response
             HttpResponse<String> responseBody = null;
-            HttpRequest hRequest = null;
+            HttpRequest hRequest;
 
             if (request.type == Request.RequestType.GET || !request.hasValues) {
                 //Send a GET request
@@ -84,6 +85,7 @@ public class SendHttp extends JavaPlugin {
             }
             else {
                 if (request.hasEncoding) {
+                    //Send a request with JSON
                     hRequest = HttpRequest.newBuilder()
                             .uri(uri)
                             .header("Content-Type", "application/json")
@@ -92,6 +94,7 @@ public class SendHttp extends JavaPlugin {
                             .build();
                 }
                 else {
+                    //Send a request in form encoding
                     hRequest = HttpRequest.newBuilder()
                             .uri(uri)
                             .header("Content-Type", "application/x-www-form-urlencoded")
