@@ -1,4 +1,4 @@
-#Details for each config setting can be found on the plugin's spigot page: https://www.spigotmc.org/resources/http-requests.101253/
+#Details for each config setting can be found on the plugin's wiki page: https://github.com/DNAmaster10/httpRequests/wiki/Configuration
 
 PrintRequestsToConsole: false
 SendResponseCodeToPlayer: true
@@ -28,6 +28,8 @@ UrlSpecificCooldown: 500
 MaxQueueSize: -1
 
 SpaceCharacter: -#-
+
+AllowSelectors: true
 
 AllowReload: true
 AllowWhitelistReload: true
