@@ -120,7 +120,7 @@ public class Queue {
         //and sends the next request if it needs to be sent.
         if (plugin.getConfig().getBoolean("UseUrlSpecificCooldown")) {
             //For each address, check if packets should be sent
-            if (urlQueue.size() == 0) {
+            if (urlQueue.isEmpty()) {
                 return;
             }
             long cooldown = plugin.getConfig().getLong("UrlSpecificCooldown");
@@ -142,7 +142,7 @@ public class Queue {
             }
         }
         else if (plugin.getConfig().getBoolean("UseGlobalCooldown")) {
-            if (queue.size() == 0) {
+            if (queue.isEmpty()) {
                 return;
             }
             if (!((currentTimeMillis() - lastSend) >= plugin.getConfig().getLong("GlobalCooldownMs"))) {
@@ -153,7 +153,7 @@ public class Queue {
             lastSend = currentTimeMillis();
         }
         else {
-            if (queue.size() == 0) {
+            if (queue.isEmpty()) {
                 return;
             }
             //Send all packets

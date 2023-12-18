@@ -172,7 +172,6 @@ public class CommandChecks {
                 return false;
             }
         }
-
         //Check permissions
         if (sender instanceof Player p) {
             if (!p.hasPermission("httprequest.sendhttp")) {

@@ -19,7 +19,6 @@ import java.io.IOException;
 
 public final class HttpRequests extends JavaPlugin {
     public static HttpRequests plugin;
-
     @Override
     public void onEnable() {
         plugin = this;
@@ -137,41 +136,38 @@ public final class HttpRequests extends JavaPlugin {
         switch (command.getName().toLowerCase()) {
             case "httpsend" -> {
                 //Check command syntax
-                if (CommandChecks.checkHttpSend(sender, args)) {
-                    //If the syntax and permissions are fine, create a new request object
-                    //and add the request to the queue
-                    Request request = new Request(sender, args);
-
-                    //Now check that the url is / isn't in the black list or whitelist
-                    if (plugin.getConfig().getBoolean("UseWhitelist")) {
-                        if (!Whitelist.checkWhitelist(request.destination)) {
-                            if (sender instanceof Player p) {
-                                p.sendMessage(ChatColor.RED + "The destination address is not contained in the whitelist, request aborted");
-                            } else if (sender instanceof ConsoleCommandSender) {
-                                plugin.getLogger().warning("The destination address is not contained in the whitelist, request aborted.");
-                            }
-                            if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
-                                plugin.getLogger().info("An HTTP request was attempted, destined for " + request.destination + ", but the address was not present in the whitelist");
-                            }
-                            return true;
-                        }
-                    }
-                    if (plugin.getConfig().getBoolean("UseBlacklist")) {
-                        if (Blacklist.checkBlacklist(request.destination)) {
-                            if (sender instanceof Player p) {
-                                p.sendMessage(ChatColor.RED + "The destination address is contained in the blacklist, request aborted.");
-                            } else if (sender instanceof ConsoleCommandSender) {
-                                plugin.getLogger().warning("The destination address is contained in the blacklist, request aborted.");
-                            }
-                            if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
-                                plugin.getLogger().info("An HTTP request was attempted, destined for " + request.destination + ", but the address was found in the blacklist");
-                            }
-                            return true;
-                        }
-                    }
-                    //If not, add the request to the queue
-                    Queue.addRequest(request);
+                if (!CommandChecks.checkHttpSend(sender, args)) {
+                    return true;
                 }
+                //If the syntax and permissions are fine, create a new request object
+                //and add the request to the queue
+                Request request = new Request(sender, args);
+
+                //Now check that the url is / isn't in the black list or whitelist
+                if (plugin.getConfig().getBoolean("UseWhitelist") && !Whitelist.checkWhitelist(request.destination)) {
+                    if (sender instanceof Player p) {
+                        p.sendMessage(ChatColor.RED + "The destination address is not contained in the whitelist, request aborted");
+                    } else if (sender instanceof ConsoleCommandSender) {
+                        plugin.getLogger().warning("The destination address is not contained in the whitelist, request aborted.");
+                    }
+                    if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
+                        plugin.getLogger().info("An HTTP request was attempted, destined for " + request.destination + ", but the address was not present in the whitelist");
+                    }
+                    return true;
+                }
+                if (plugin.getConfig().getBoolean("UseBlacklist") && Blacklist.checkBlacklist(request.destination)) {
+                    if (sender instanceof Player p) {
+                        p.sendMessage(ChatColor.RED + "The destination address is contained in the blacklist, request aborted.");
+                    } else if (sender instanceof ConsoleCommandSender) {
+                        plugin.getLogger().warning("The destination address is contained in the blacklist, request aborted.");
+                    }
+                    if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
+                        plugin.getLogger().info("An HTTP request was attempted, destined for " + request.destination + ", but the address was found in the blacklist");
+                    }
+                    return true;
+                }
+                //If not, add the request to the queue
+                Queue.addRequest(request);
             }
             case "httpreload" -> {
                 //Check the syntax and permissions

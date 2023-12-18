@@ -29,8 +29,8 @@ public class Request {
             this.hasValues = true;
             this.values = args[2].replace(plugin.getConfig().getString("SpaceCharacter"), " ");
             //Check for target selectors and add if they exist
-            if (this.values.contains("@")) {
-                this.values = Selectors.replaceSelectors(this.values);
+            if (plugin.getConfig().getBoolean("AllowSelectors") && this.values.contains("@")) {
+                this.values = Selectors.replaceSelectors(this.values, sender);
             }
         }
         if (args.length > 3) {
