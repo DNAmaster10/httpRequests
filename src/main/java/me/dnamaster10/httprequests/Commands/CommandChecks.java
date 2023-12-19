@@ -1,6 +1,8 @@
 package me.dnamaster10.httprequests.Commands;
 
+import jdk.jshell.execution.Util;
 import me.dnamaster10.httprequests.HttpRequests;
+import me.dnamaster10.httprequests.Utilities;
 import org.bukkit.ChatColor;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -15,20 +17,13 @@ public class CommandChecks {
     //Takes a command and checks that the syntax, logic e.t.c is valid
     public static boolean checkReload(CommandSender sender) {
         //Check permissions
-        if (sender instanceof Player p) {
-            if (!p.hasPermission("httprequest.reload")) {
-                p.sendMessage(ChatColor.RED + "You do not have permission to perform that action. Please contact a server administrator if you believe this is an error");
-                return false;
-            }
+        if (sender instanceof Player p && !p.hasPermission("httprequest.reload")) {
+            p.sendMessage(ChatColor.RED + "You do not have permission to perform that action. Please contact a server administrator if you believe this is an error");
+            return false;
         }
 
         if (!plugin.getConfig().getBoolean("AllowReload")) {
-            if (sender instanceof Player p) {
-                p.sendMessage(ChatColor.RED + "Reloading the config is disabled in the config");
-            }
-            if (sender instanceof ConsoleCommandSender) {
-                plugin.getLogger().warning("Reloading the config is disabled in the config");
-            }
+            Utilities.returnWarningS(sender, "Reloading is disabled in the config");
             return false;
         }
 
@@ -44,12 +39,7 @@ public class CommandChecks {
             }
         }
         if (!plugin.getConfig().getBoolean("AllowWhitelistReload")) {
-            if (sender instanceof Player p) {
-                p.sendMessage(ChatColor.RED + "Reloading the whitelist is disabled in the config");
-            }
-            if (sender instanceof ConsoleCommandSender) {
-                plugin.getLogger().warning("Reloading the whitelist is disabled in the config");
-            }
+            Utilities.returnWarningS(sender, "Reloading the whitelist is disabled in the config");
             return false;
         }
         //If all checks are passed, return true
@@ -64,12 +54,7 @@ public class CommandChecks {
             }
         }
         if (!plugin.getConfig().getBoolean("AllowBlacklistReload")) {
-            if (sender instanceof Player p) {
-                p.sendMessage(ChatColor.RED + "Reloading the blacklist is disabled in the config");
-            }
-            else if (sender instanceof ConsoleCommandSender) {
-                plugin.getLogger().warning("Reloading the blacklist is disabled in the config");
-            }
+            Utilities.returnWarningS(sender, "Reloading the blacklist is disabled in the config");
             return false;
         }
         //If all checks are passed, return true
@@ -83,12 +68,7 @@ public class CommandChecks {
             }
         }
         if (!plugin.getConfig().getBoolean("AllowResponseWhitelistReload")) {
-            if (sender instanceof Player p) {
-                p.sendMessage(ChatColor.RED + "Reloading the response whitelist is disabled in the config");
-            }
-            else if (sender instanceof ConsoleCommandSender) {
-                plugin.getLogger().warning("Reloading the response whitelist is disabled in the config");
-            }
+            Utilities.returnWarningS(sender, "Reloading the response whitelist is disabled in the config");
             return false;
         }
         //If all checks are passed, return true
@@ -102,12 +82,7 @@ public class CommandChecks {
             }
         }
         if (!plugin.getConfig().getBoolean("AllowResponseBlacklistReload")) {
-            if (sender instanceof Player p) {
-                p.sendMessage(ChatColor.RED + "Reloading the response blacklist is disabled in the config");
-            }
-            else if (sender instanceof ConsoleCommandSender) {
-                plugin.getLogger().warning("Reloading the config is disabled in the config");
-            }
+            Utilities.returnWarningS(sender, "Reloading the response blacklist is disabled in the config");
             return false;
         }
         return true;
@@ -120,12 +95,7 @@ public class CommandChecks {
             }
         }
         if (!plugin.getConfig().getBoolean("AllowScriptReload")) {
-            if (sender instanceof Player p) {
-                p.sendMessage(ChatColor.RED + "Reloading the response processing script is disabled in the config");
-            }
-            else if (sender instanceof ConsoleCommandSender) {
-                plugin.getLogger().warning("Reloading the response processing script is disabled in the config");
-            }
+            Utilities.returnWarningS(sender, "Reloading the response processing script is disabled in the config");
             return false;
         }
         return true;
@@ -136,12 +106,7 @@ public class CommandChecks {
 
         //Are requests enabled?
         if (!plugin.getConfig().getBoolean("AllowRequest")) {
-            if (sender instanceof Player p) {
-                p.sendMessage(ChatColor.RED + "HTTP requests are disabled on this server");
-            }
-            else if (sender instanceof ConsoleCommandSender) {
-                plugin.getLogger().warning("HTTP requests are disabled in the config");
-            }
+            Utilities.returnWarningS(sender, "HTTP requests are disabled in the config");
             return false;
         }
         //Check sender and sender permissions
@@ -182,57 +147,31 @@ public class CommandChecks {
 
         //Command syntax checks
         if (args.length < 2) {
-            if (sender instanceof Player p) {
-                p.sendMessage(ChatColor.RED + "Syntax: /httpsend [GET/POST] [destination] [name1=value&name2=value2]");
-            }
-            else if (sender instanceof ConsoleCommandSender) {
-                plugin.getLogger().warning("Syntax: httpsend [GET/POST] [destination] [name1=value&name2=value2]");
-            }
+            Utilities.returnWarningS(sender, "Syntax: /httpsend [GET/POST] [destination] [name1=value&name2=value2");
             return false;
         }
         //Check permission for GET or POST
         if (args[0].equals("POST")) {
             if (!plugin.getConfig().getBoolean("AllowPost")) {
-                if (sender instanceof Player p) {
-                    p.sendMessage(ChatColor.RED + "POST requests are disabled on this server");
-                } else if (sender instanceof ConsoleCommandSender) {
-                    plugin.getLogger().warning("POST requests are disabled in the config");
-                }
+                Utilities.returnWarningS(sender, "Post requests are disabled in the config");
                 return false;
             }
         }
         else if (args[0].equals("GET")) {
             if (!plugin.getConfig().getBoolean("AllowGet")) {
-                if (sender instanceof Player p) {
-                    p.sendMessage(ChatColor.RED + "GET requests are disabled on this server");
-                }
-                else if (sender instanceof ConsoleCommandSender) {
-                    plugin.getLogger().warning("GET requests are disabled in the config");
-                }
+                Utilities.returnWarningS(sender, "Get requests are disabled in the config");
                 return false;
             }
         }
         else {
-            if (sender instanceof Player p) {
-                p.sendMessage(ChatColor.RED + "Request type '" + args[0] + "' is invalid, or not currently supported");
-            }
-            else if (sender instanceof ConsoleCommandSender) {
-                plugin.getLogger().warning("Request type '" + args[0] + "' is invalid, or not currently supported");
-            }
+            Utilities.returnWarningS(sender, "Request type '" + args[0] + "' is invalid, or not currently supported");
             return false;
         }
-
         //Check encoding type
         if (args.length > 3 && !args[3].equals("application/json")) {
-            if (sender instanceof Player p) {
-                p.sendMessage(ChatColor.RED + "Encoding type not recognised, or not yet supported");
-            }
-            else if (sender instanceof ConsoleCommandSender) {
-                plugin.getLogger().warning("Encoding type not recognised, or not yet supported");
-            }
+            Utilities.returnWarningS(sender, "Encoding type not recognised or not yet supported");
             return false;
         }
-
         //If all checks are passed, return true
         return true;
     }

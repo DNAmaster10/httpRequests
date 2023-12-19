@@ -26,61 +26,25 @@ public class Queue {
         //Handles request addition based on max queue size
         //Check queue size
         if (plugin.getConfig().getInt("MaxQueueSize") >= 0) {
-            if (plugin.getConfig().getBoolean("UseGlobalCooldown")) {
-                if (queue.size() >= plugin.getConfig().getInt("MaxQueueSize")) {
-                    if (request.sender instanceof Player p) {
-                        p.sendMessage(ChatColor.RED + "Request aborted as the queue is full");
-                    }
-                    else if (request.sender instanceof ConsoleCommandSender) {
-                        plugin.getLogger().warning("Request aborted as the queue is full");
-                    }
-                    if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
-                        plugin.getLogger().info("A request was aborted as the queue was full");
-                    }
-                    return;
-                }
+            if (plugin.getConfig().getBoolean("UseGlobalCooldown") && queue.size() >= plugin.getConfig().getInt("MaxQueueSize")) {
+                Utilities.returnWarning(request.sender, "Request aborted as the queue is full", "A request was aborted ans the queue was full");
+                return;
             }
             else if (plugin.getConfig().getBoolean("UseUrlSpecificCooldown")) {
                 if (plugin.getConfig().getInt("MaxQueueSize") == 0) {
-                    if (request.sender instanceof Player p) {
-                        p.sendMessage(ChatColor.RED + "Request aborted as the queue is full");
-                    }
-                    else if (request.sender instanceof ConsoleCommandSender) {
-                        plugin.getLogger().warning("Request aborted as the queue is full");
-                    }
-                    if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
-                        plugin.getLogger().info("A request was aborted as the queue was full");
-                    }
+                    Utilities.returnWarning(request.sender, "Request aborted as the queue is full", "A request was aborted as the queue was full");
                     return;
                 }
-                else if (urlQueue.containsKey(request.destination)) {
-                    if (urlQueue.get(request.destination).size() > plugin.getConfig().getInt("MaxQueueSize")) {
-                        if (request.sender instanceof Player p) {
-                            p.sendMessage(ChatColor.RED + "Request aborted as the queue is full");
-                        }
-                        else if (request.sender instanceof ConsoleCommandSender) {
-                            plugin.getLogger().warning("Request aborted as the queue is full");
-                        }
-                        if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
-                            plugin.getLogger().info("A request was aborted as the queue was full");
-                        }
-                        return;
-                    }
+                else if (urlQueue.containsKey(request.destination) && urlQueue.get(request.destination).size() > plugin.getConfig().getInt("MaxQueueSize")) {
+                    Utilities.returnWarning(request.sender, "Request aborted as the queue is full", "A request was aborted as the queue was full");
+                    return;
                 }
             }
         }
         //If the queue isn't full, check which queue should be used and add the request
         if (plugin.getConfig().getBoolean("UseGlobalCooldown")) {
             queue.add(request);
-            if (request.sender instanceof Player p) {
-                p.sendMessage(ChatColor.GREEN + "Request added to queue");
-            }
-            else if (request.sender instanceof ConsoleCommandSender) {
-                plugin.getLogger().info("Request added to queue");
-            }
-            if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
-                plugin.getLogger().info("A request, destined for " + request.destination + ", was added to the queue");
-            }
+            Utilities.returnInfo(request.sender, "Request added to queue", "A request, destined for " + request.destination + ", was added to the queue");
         }
         else if (plugin.getConfig().getBoolean("UseUrlSpecificCooldown")) {
             //First check if the URL exists in the hashmap
@@ -92,27 +56,11 @@ public class Queue {
             }
             //Then add it
             urlQueue.get(request.destination).add(request);
-            if (request.sender instanceof Player p) {
-                p.sendMessage(ChatColor.GREEN + "Request added to queue");
-            }
-            else if (request.sender instanceof ConsoleCommandSender) {
-                plugin.getLogger().info("Request added to queue");
-            }
-            if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
-                plugin.getLogger().info("A request, destined for " + request.destination + ", was added to the queue");
-            }
+            Utilities.returnInfo(request.sender, "Request added to queue", "A request, destined for " + request.destination + ", was added to the queue");
         }
         else {
             queue.add(request);
-            if (request.sender instanceof Player p) {
-                p.sendMessage(ChatColor.GREEN + "Request added to queue");
-            }
-            else if (request.sender instanceof ConsoleCommandSender) {
-                plugin.getLogger().info("Request added to queue");
-            }
-            if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
-                plugin.getLogger().info("A request, destined for " + request.destination + ", was added to the queue");
-            }
+            Utilities.returnInfo(request.sender, "Request added to queue", "A request, destined for " + request.destination + ", was added to the queue");
         }
     }
     public static void tickQueue() {
@@ -133,7 +81,7 @@ public class Queue {
                     urlQueue.get(url).remove(0);
 
                     //If there are no more requests for that URL, remove the URL
-                    if (urlQueue.get(url).size() == 0) {
+                    if (urlQueue.get(url).isEmpty()) {
                         urlQueue.remove(url);
                     }
                     //Finally, update the cooldown time

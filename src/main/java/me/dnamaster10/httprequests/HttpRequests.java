@@ -145,25 +145,11 @@ public final class HttpRequests extends JavaPlugin {
 
                 //Now check that the url is / isn't in the black list or whitelist
                 if (plugin.getConfig().getBoolean("UseWhitelist") && !Whitelist.checkWhitelist(request.destination)) {
-                    if (sender instanceof Player p) {
-                        p.sendMessage(ChatColor.RED + "The destination address is not contained in the whitelist, request aborted");
-                    } else if (sender instanceof ConsoleCommandSender) {
-                        plugin.getLogger().warning("The destination address is not contained in the whitelist, request aborted.");
-                    }
-                    if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
-                        plugin.getLogger().info("An HTTP request was attempted, destined for " + request.destination + ", but the address was not present in the whitelist");
-                    }
+                    Utilities.returnWarning(sender, "Destination address not present in whitelist", "A request destined for " + request.destination + " was aborted as it was not present in the whitelist.");
                     return true;
                 }
                 if (plugin.getConfig().getBoolean("UseBlacklist") && Blacklist.checkBlacklist(request.destination)) {
-                    if (sender instanceof Player p) {
-                        p.sendMessage(ChatColor.RED + "The destination address is contained in the blacklist, request aborted.");
-                    } else if (sender instanceof ConsoleCommandSender) {
-                        plugin.getLogger().warning("The destination address is contained in the blacklist, request aborted.");
-                    }
-                    if (plugin.getConfig().getBoolean("PrintRequestsToConsole")) {
-                        plugin.getLogger().info("An HTTP request was attempted, destined for " + request.destination + ", but the address was found in the blacklist");
-                    }
+                    Utilities.returnWarning(sender, "Destination address was present in whitelist", "A request destined for " + request.destination + " was aborted as it was present in the blacklist.");
                     return true;
                 }
                 //If not, add the request to the queue
@@ -174,73 +160,32 @@ public final class HttpRequests extends JavaPlugin {
                 if (!CommandChecks.checkReload(sender)) {
                     return true;
                 }
-                if (sender instanceof Player p) {
-                    p.sendMessage(ChatColor.GREEN + "Reloading config...");
-                }
-                plugin.getLogger().info("Reloading HTTP requests config...");
+                Utilities.returnInfo(sender, "Reloading HTTPrequests config...");
                 ReloadConfig.Reload(plugin, sender);
             }
             case "httpreloadwhitelist" -> {
                 //Check the syntax and permissions
-                if (!CommandChecks.checkReloadWhitelist(sender)) {
-                    return true;
-                }
-                if (sender instanceof Player p) {
-                    p.sendMessage(ChatColor.GREEN + "Reloading the whitelist...");
-                } else if (sender instanceof ConsoleCommandSender) {
-                    plugin.getLogger().info("Reloading the whitelist...");
-                }
+                Utilities.returnInfo(sender, "Reloading HTTPRequests whitelist...");
                 Whitelist.reloadWhitelist(sender);
             }
             case "httpreloadblacklist" -> {
                 //Check the syntax and permissions
-                if (!CommandChecks.checkReloadBlacklist(sender)) {
-                    return true;
-                }
-                if (sender instanceof Player p) {
-                    p.sendMessage(ChatColor.GREEN + "Reloading the blacklist...");
-                } else if (sender instanceof ConsoleCommandSender) {
-                    plugin.getLogger().info("Reloading the blacklist...");
-                }
+                Utilities.returnInfo(sender, "Reloading HTTPRequests blacklist...");
                 Blacklist.reloadBlacklist(sender);
             }
             case "httpreloadresponsewhitelist" -> {
                 //Check the syntax and permissions
-                if (!CommandChecks.checkReloadResponseWhitelist(sender)) {
-                    return true;
-                }
-                if (sender instanceof Player p) {
-                    p.sendMessage(ChatColor.GREEN + "Reloading the response whitelist...");
-                }
-                else if (sender instanceof ConsoleCommandSender) {
-                    plugin.getLogger().info("Reloading the response whitelist...");
-                }
+                Utilities.returnInfo(sender, "Reloading HTTPRequests response whitelist...");
                 ResponseWhitelist.reloadWhitelist(sender);
             }
             case "httpreloadresponseblacklist" -> {
                 //Check the syntax and permissions
-                if (!CommandChecks.checkReloadResponseBlacklist(sender)) {
-                    return true;
-                }
-                if (sender instanceof Player p) {
-                    p.sendMessage(ChatColor.GREEN + "Reloading the response blacklist...");
-                }
-                else if (sender instanceof ConsoleCommandSender) {
-                    plugin.getLogger().info("Reloading the response blacklist...");
-                }
+                Utilities.returnInfo(sender, "Reloading HTTPRequests response blacklist...");
                 ResponseBlacklist.reloadBlacklist(sender);
             }
             case "httpreloadscript" -> {
                 //Check syntax and permissions
-                if (!CommandChecks.checkScriptReload(sender)) {
-                    return true;
-                }
-                if (sender instanceof Player p) {
-                    p.sendMessage(ChatColor.GREEN + "Reloading the response processing script...");
-                }
-                else if (sender instanceof ConsoleCommandSender) {
-                    plugin.getLogger().info("Reloading the response processing script...");
-                }
+                Utilities.returnInfo(sender, "Reloading HTTPRequests response processing script...");
                 ResponseHandle.reloadScript(sender);
             }
         }

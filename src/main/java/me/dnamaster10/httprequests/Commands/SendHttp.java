@@ -2,6 +2,7 @@ package me.dnamaster10.httprequests.Commands;
 
 import me.dnamaster10.httprequests.HttpRequests;
 import me.dnamaster10.httprequests.Request;
+import me.dnamaster10.httprequests.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -59,15 +60,7 @@ public class SendHttp extends JavaPlugin {
                 URL url = new URL(request.destination);
             }
             catch (Exception e) {
-                if (request.sender instanceof Player p) {
-                    p.sendMessage(ChatColor.RED + "Failed to send HTTP request: Malformed URL. Make sure to include a protocol!");
-                }
-                else if (request.sender instanceof ConsoleCommandSender) {
-                    plugin.getLogger().warning("Failed to send HTTP request: Malformed URL. Make sure to include a protocol!");
-                }
-                if (printRequests) {
-                    plugin.getLogger().warning("Failed to send an HTTP request with a malformed URL: " + request.destination);
-                }
+                Utilities.returnWarning(request.sender, "Failed to send HTTP request: Malformed URL. Make sure to include a protocol!", "Failed to send an HTTP request with a malformed URL: " + request.destination);
                 return;
             }
             //Response
@@ -107,38 +100,15 @@ public class SendHttp extends JavaPlugin {
                 responseBody = client.send(hRequest, HttpResponse.BodyHandlers.ofString());
             }
             catch (HttpConnectTimeoutException e) {
-                if (request.sender instanceof Player p) {
-                    p.sendMessage("The request timed out");
-                }
-                else if (request.sender instanceof ConsoleCommandSender) {
-                    plugin.getLogger().warning("The request timed out");
-                }
-                if (printRequests) {
-                    plugin.getLogger().info("A request timed out destined for " + request.destination);
-                }
+                Utilities.returnWarning(request.sender, "The request timed out", "A request timed out destined for " + request.destination);
                 return;
             }
             catch (ConnectException e) {
-                if (request.sender instanceof Player p) {
-                    p.sendMessage("Failed to establish a connection to the remote server");
-                }
-                else if (request.sender instanceof ConsoleCommandSender) {
-                    plugin.getLogger().warning("Failed to establish a connection to the remote server");
-                }
-                if (printRequests) {
-                    plugin.getLogger().warning("Failed to establish a connection to " + request.destination);
-                }
+                Utilities.returnWarning(request.sender, "Failed to establish a connection to the remote server", "Failed to establish a connection to " + request.destination);
+                return;
             }
             catch (Exception e) {
-                if (request.sender instanceof Player p) {
-                    p.sendMessage("The request failed to send");
-                }
-                else if (request.sender instanceof ConsoleCommandSender) {
-                    plugin.getLogger().warning("The request failed to send");
-                }
-                if (printRequests) {
-                    plugin.getLogger().warning("An error occurred sending a request to " + request.destination + ", " + e);
-                }
+                Utilities.returnWarning(request.sender, "The request failed to send", "An error occurred sending a request to " + request.destination + ", " + e);
                 return;
             }
             //Finally, handle the request and response in a sync thread
